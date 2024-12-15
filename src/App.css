@@ -24,3 +24,23 @@ p {
   margin-top: 1rem;
   font-size: 1.2rem;
 }
+
+.login-container {
+  text-align: center;
+  padding: 2rem;
+  background-color: #f4f4f9;
+  border-radius: 8px;
+}
+
+input, button {
+  margin: 1rem;
+  padding: 0.5rem;
+}
+
+button {
+  cursor: pointer;
+  background-color: #6200ea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
