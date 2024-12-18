@@ -1,52 +1,71 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Login.css'; // Import the CSS file
 
 function Login() {
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('student'); // Default role is student
+  const [isSignUp, setIsSignUp] = useState(false); // Toggle between login and signup
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (email && role) {
-      // Store email and role in localStorage
-      localStorage.setItem('email', email);
-      localStorage.setItem('role', role);
-      navigate('/dashboard'); // Redirect to the dashboard
+  const handleLoginOrSignUp = () => {
+    if (!email) {
+      alert('Please enter an email.');
+      return;
+    }
+
+    // Retrieve users from localStorage
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+
+    if (isSignUp) {
+      // Handle Signup
+      const userExists = users.some((user) => user.email === email);
+
+      if (userExists) {
+        alert('User already exists. Please login.');
+        setIsSignUp(false); // Switch to login mode
+      } else {
+        users.push({ email });
+        localStorage.setItem('users', JSON.stringify(users));
+        alert('Signup successful! You can now log in.');
+        setIsSignUp(false); // Switch to login mode
+      }
     } else {
-      alert('Please enter both email and role');
+      // Handle Login
+      const userExists = users.some((user) => user.email === email);
+
+      if (userExists) {
+        navigate('/dashboard'); // Redirect to Dashboard
+      } else {
+        alert('User not found. Please sign up.');
+        setIsSignUp(true); // Switch to signup mode
+      }
     }
   };
 
   return (
     <div className="login-container">
-      <h1>Login to Topic Trail</h1>
+      <h1>{isSignUp ? 'Sign Up' : 'Login'}</h1>
       <input
         type="email"
         placeholder="Enter your email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        className="email-input"
       />
-      <div>
-        <label>
-          Teacher
-          <input
-            type="radio"
-            value="teacher"
-            checked={role === 'teacher'}
-            onChange={() => setRole('teacher')}
-          />
-        </label>
-        <label>
-          Student
-          <input
-            type="radio"
-            value="student"
-            checked={role === 'student'}
-            onChange={() => setRole('student')}
-          />
-        </label>
-      </div>
-      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleLoginOrSignUp} className="login-btn">
+        {isSignUp ? 'Sign Up' : 'Login'}
+      </button>
+      <p>
+        {isSignUp
+          ? 'Already have an account? '
+          : "Don't have an account? "}
+        <span
+          className="toggle-signup"
+          onClick={() => setIsSignUp(!isSignUp)}
+        >
+          {isSignUp ? 'Login' : 'Sign Up'}
+        </span>
+      </p>
     </div>
   );
 }

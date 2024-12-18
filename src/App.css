@@ -37,10 +37,10 @@ input, button {
   padding: 0.5rem;
 }
 
-button {
+/* .goToLogin{
   cursor: pointer;
-  background-color: #6200ea;
+  background-color: ;
   color: white;
   border: none;
   border-radius: 5px;
-}
+} */

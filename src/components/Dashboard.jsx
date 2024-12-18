@@ -1,20 +1,33 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import TeacherDashboard from './TeacherDashboard'; // Import Teacher's Dashboard
-import StudentDashboard from './StudentDashboard'; // Import Student's Dashboard
+import './Dashboard.css'; // Import the CSS file
 
 function Dashboard() {
-  const role = localStorage.getItem('role'); // Get the user's role from localStorage
+  const folders = [
+    { id: 1, name: 'Math' },
+    { id: 2, name: 'Science' },
+    { id: 3, name: 'History' },
+  ]; // Example folders
   const navigate = useNavigate();
 
-  if (!role) {
-    navigate('/'); // If no role is set, navigate to login
-  }
+  const handleFolderClick = (folderId) => {
+    navigate(`/videos/${folderId}`); // Redirect to video interface
+  };
 
   return (
-    <div>
-      <h1>Welcome to the Dashboard</h1>
-      {role === 'teacher' ? <TeacherDashboard /> : <StudentDashboard />}
+    <div className="dashboard-container">
+      <h1>Welcome to Topic Trail Dashboard</h1>
+      <div className="folders-container">
+        {folders.map((folder) => (
+          <div
+            key={folder.id}
+            className="folder-card"
+            onClick={() => handleFolderClick(folder.id)}
+          >
+            {folder.name}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
