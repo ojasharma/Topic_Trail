@@ -8,23 +8,17 @@ function Dashboard() {
     { id: 2, name: 'Science' },
     { id: 3, name: 'History' },
     { id: 4, name: 'Math' },
-    { id: 5, name: 'Science' },
-    { id: 6, name: 'History' },
-    { id: 7, name: 'Math' },
-    { id: 8, name: 'Science' },
-    { id: 9, name: 'History' },
-    { id: 10, name: 'Math' },
-    { id: 11, name: 'Science' },
-    { id: 12, name: 'History' },
-    { id: 13, name: 'Math' },
-    { id: 14, name: 'Science' },
-    { id: 15, name: 'History' },
+    { id: 5, name: 'Mole Concept' },
+    { id: 6, name: 'Algebra' },
+    { id: 7, name: 'Computing' },
+    { id: 8, name: 'Geography' },
+    { id: 9, name: 'Literature' },
   ]; // Example folders
   const navigate = useNavigate();
 
-  const handleFolderClick = (folderId) => {
-    navigate(`/videos/${folderId}`); // Redirect to video interface
-  };
+  const handleFolderClick = (folderId, folderName) => {
+    navigate(`/videos/${folderId}`, { state: { folderName: folderName } });
+  };  
 
   return (
     <div className="dashboard-container">
@@ -34,7 +28,7 @@ function Dashboard() {
           <div
             key={folder.id}
             className="folder-card"
-            onClick={() => handleFolderClick(folder.id)}
+            onClick={() => handleFolderClick(folder.id, folder.name)}
           >
             {folder.name}
           </div>
