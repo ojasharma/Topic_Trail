@@ -25,22 +25,28 @@ p {
   font-size: 1.2rem;
 }
 
-.login-container {
-  text-align: center;
-  padding: 2rem;
-  background-color: #f4f4f9;
-  border-radius: 8px;
+
+.goToLogin {
+  background-color: #4caf50; 
+  color: black;            
+  border: none;             
+  padding: 10px 20px;       
+  text-align: center;       
+  text-decoration: none;    
+  display: inline-block;    
+  font-size: 16px;          
+  margin: 10px 0;           
+  cursor: pointer;          
+  border-radius: 5px;       
+  transition: background-color 0.3s ease; 
+  font-weight: bold;
 }
 
-input, button {
-  margin: 1rem;
-  padding: 0.5rem;
+.goToLogin:hover {
+  background-color: #45a049; /* Slightly darker green on hover */
 }
 
-/* .goToLogin{
-  cursor: pointer;
-  background-color: ;
-  color: white;
-  border: none;
-  border-radius: 5px;
-} */
+.goToLogin:active {
+  background-color: #3e8e41; /* Even darker green when clicked */
+}
+

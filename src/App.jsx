@@ -17,7 +17,7 @@ function App() {
         <h1>Welcome to Topic Trail</h1>
         <p>Your one-stop solution for topic-based video search!</p>
         {/* Button to navigate to Login page */}
-        <button onClick={goToLogin}>
+        <button onClick={goToLogin} className="goToLogin">
           Go to Login
         </button>
       </header>
