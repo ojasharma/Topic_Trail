@@ -13,7 +13,7 @@ function Signup(){
                         type= "text"
                         name= "name"
                         autoFocus
-                        placeholder= "Enter yout name"
+                        placeholder= "Enter your name"
                     />
                 </div>
                 <div>
