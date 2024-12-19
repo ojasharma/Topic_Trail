@@ -1,0 +1,45 @@
+.dashboard-heading {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  color: navy;
+  padding: 20px;
+  letter-spacing: normal;
+  transition: all 0.3s ease;
+}
+
+.dashboard-heading:hover {
+  transform: scale(1.2);
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .folders-container {
+    display: grid; /* Enable grid layout */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Auto-adjust columns */
+    gap: 20px; /* Space between grid items */
+    justify-items: center; /* Center items horizontally */
+    padding: 20px;
+  }
+  
+  .folder-card {
+    background-color: #6200ea;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    width: 200px; /* Consistent width */
+    text-align: center;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .folder-card:hover {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+  }
+  
