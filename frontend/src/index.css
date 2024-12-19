@@ -12,6 +12,7 @@ label {
 
 html,
 body{
+  background-color: #b5c4f2;
   height: 100%;
   width: 100%
 }
@@ -22,4 +23,20 @@ body{
   align-items: center;
 }
 
+.container{
+  background-color: #d5dc11;
+  padding: 32px 48px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 8px 8px 24px 0px #a826aa;
+}
 
+.container > h1{
+  margin-bottom: 20px;
+}
+
+.container > form{
+  display: flex;
+  flex-direction: column;
+}
