@@ -1,29 +1,65 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ToastContainer} from 'react-toastify'
+import { handleError, handleSuccess } from '../utils'
+import { useNavigate } from 'react-router-dom';
 
 function Signup(){
 
-    const[loginInfo , setLoginInfo] = useState({
+    const[signupInfo , setSignupInfo] = useState({
         name: '',
         email: '',
         password: ''
     })
 
+    const navigate = useNavigate();
+
     const handleChange = (e) => {
         const {name,value} = e.target;
         console.log(name,value);
-        const copyLoginInfo = {...loginInfo};
-        copyLoginInfo[name] = value;
-        setLoginInfo(copyLoginInfo);
+        const copySignupInfo = {...signupInfo};
+        copySignupInfo[name] = value;
+        setSignupInfo(copySignupInfo);
     }
 
-    console.log("login info ->" , loginInfo)
+    const handleSignup = async (e) => {
+        e.preventDefault();
+        const {name, email, password} = signupInfo;
+        if (!name || !email || !password){
+            return handleError('All fields are mandatory.')
+        }
+        try {
+            const url= "http://localhost:8080/auth/signup" //this is for examle, we will add our backend url
+            const response = await fetch (url, {
+                method: "POST",
+                headers: {
+                    'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify(signupInfo)
+            });
+            const result = await response.json();
+            const { success, message, error } = result;
+            if (success){
+                handleSuccess(message);
+                setTimeout(()=>{
+                    navigate('/login')
+                }, 1000)
+            }else if (error) {
+                const details = error?.details[0].message;
+                handleError(details);
+            } else if (!success) {
+                handleError(message);
+            }
+            console.log(result);
+        } catch (err) {
+            handleError(err);
+        }
+    }
 
     return(
         <div className="container">
             <h1>Signup</h1>
-            <form>
+            <form onSubmit={handleSignup}>
                 <div>
                     <label htmlFor="name">Name</label>
                     <input
@@ -32,6 +68,7 @@ function Signup(){
                         name= "name"
                         autoFocus
                         placeholder= "Enter your name"
+                        value= {signupInfo.name}
                     />
                 </div>
                 <div>
@@ -42,6 +79,7 @@ function Signup(){
                         name= "email"
                         autoFocus
                         placeholder= "Enter your Email"
+                        value= {signupInfo.email}
                     />
                 </div>
                 <div>
@@ -52,9 +90,10 @@ function Signup(){
                         name= "password"
                         autoFocus
                         placeholder= "Enter a Password"
+                        value= {signupInfo.password}
                     />
                 </div>
-                <button>Signup</button>
+                <button type='submit'>Signup</button>
                 <span>Already have an account?
                     <Link to="/login">Login</Link>
                 </span>
