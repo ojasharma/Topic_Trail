@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Modal.css";
+const token = localStorage.getItem("token");
 
 const Modal = ({ isOpen, onClose, type }) => {
   if (!isOpen) return null;
@@ -11,8 +12,8 @@ const Modal = ({ isOpen, onClose, type }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const createurl = "http://localhost:8080/create"; // Use correct URL for create
-    const joinUrl = "http://localhost:8080/join"; // Add the correct URL for join
+    const createurl = "http://localhost:8080/classes/create"; // Use correct URL for create
+    const joinUrl = "http://localhost:8080/classes/join"; // Add the correct URL for join
 
     const data = type === "create" ? { title } : { classCode }; // Send title for create, classCode for join
 
@@ -21,6 +22,7 @@ const Modal = ({ isOpen, onClose, type }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(data),
       });
