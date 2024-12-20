@@ -1,8 +1,12 @@
 import React from 'react'
+import Header from "../assets/Header"
 
 function Home(){
     return(
-        <div>Home</div>
+        <div>
+            <Header />
+            Home
+        </div>
     )
 }
 
