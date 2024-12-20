@@ -3,11 +3,13 @@ import Header from "../assets/Header";
 import "./Home.css";
 import { ToastContainer } from "react-toastify";
 import { handleError } from "../utils";
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
-  const [classes, setClasses] = useState([]); // Store fetched classes
-  const [loading, setLoading] = useState(true); // Manage loading state
-  const token = localStorage.getItem("token"); // Get JWT token from localStorage
+  const [classes, setClasses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -23,7 +25,7 @@ function Home() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         });
 
@@ -42,7 +44,7 @@ function Home() {
                   method: "GET",
                   headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    "Authorization": `Bearer ${token}`,
                   },
                 }
               );
@@ -58,14 +60,14 @@ function Home() {
               console.error(
                 `Error fetching creator for class ${classItem.title}: ${err.message}`
               );
-              return { ...classItem, creatorName: "Unknown" }; // Fallback creator name
+              return { ...classItem, creatorName: "Unknown" };
             }
           })
         );
 
         setClasses(classesWithCreators);
       } catch (err) {
-        handleError(err.message); // Display error if request fails
+        handleError(err.message);
       } finally {
         setLoading(false);
       }
@@ -74,9 +76,14 @@ function Home() {
     fetchClasses();
   }, [token]);
 
+  const handleCardClick = (classId) => {
+    navigate(`/class/${classId}`);
+  };
+
   return (
     <div>
       <Header />
+      <div class="spacer"></div>
       <div className="home-container">
         <h1>Your Classes</h1>
         {loading ? (
@@ -86,7 +93,12 @@ function Home() {
         ) : (
           <div className="classes-grid">
             {classes.map((classItem) => (
-              <div key={classItem._id} className="class-card">
+              <div
+                key={classItem._id}
+                className="class-card"
+                onClick={() => handleCardClick(classItem._id)}
+                role="button"
+              >
                 <h2>{classItem.title}</h2>
                 <p>Created by: {classItem.creatorName}</p>
               </div>
