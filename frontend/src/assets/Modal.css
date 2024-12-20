@@ -1,0 +1,57 @@
+/* Modal overlay to darken the background */
+.modal-overlay {
+    position: fixed;  /* Fix the modal to the entire screen */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    display: flex;
+    justify-content: center; /* Horizontally center the modal */
+    align-items: center; /* Vertically center the modal */
+    z-index: 1000; /* Make sure the modal appears above other content */
+    width: 100%; /* Ensure it covers full width */
+    height: 100%; /* Ensure it covers full height */
+  }
+  
+  /* Modal content (the box) */
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px; /* Fixed width for the modal */
+    max-width: 90%; /* Ensures the modal doesn't overflow on smaller screens */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .modal-content h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+  }
+  
+  .modal-content p {
+    margin-bottom: 20px;
+  }
+
+  .modal-content input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .modal-content button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .modal-content button:hover {
+    background-color: #0056b3;
+  }
+  

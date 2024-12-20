@@ -1,0 +1,69 @@
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    z-index: 1000;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between; /* Space between the logo and icons */
+    align-items: center;
+  }
+  
+  .logo {
+    flex: 1; /* Ensures it stays on the left */
+    text-align: left; /* Aligns the text (or image) to the left */
+  }
+  
+  .logo-img {
+    height: 40px; /* Adjust height as needed */
+    width: auto; /* Keeps aspect ratio intact */
+  }
+  
+  .icons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* This ensures icons go to the right */
+  }
+  
+  .profile-icon {
+    font-size: 24px;
+    margin-right: 20px;
+    cursor: pointer;
+  }
+  
+  .plus-container {
+    position: relative;
+  }
+  
+  .plus-icon {
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 30px; /* Moves the dropdown below the plus icon */
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 150px;
+    z-index: 9999;
+  }
+  
+  .dropdown-item {
+    padding: 10px;
+    text-align: left;
+    cursor: pointer;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f0f0f0; /* Light hover effect */
+  }
+  
