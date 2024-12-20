@@ -23,7 +23,7 @@ function Home() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -42,7 +42,7 @@ function Home() {
                   method: "GET",
                   headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
                   },
                 }
               );
@@ -55,7 +55,9 @@ function Home() {
               return { ...classItem, creatorName: creatorData.name };
             } catch (err) {
               // Fallback if creator details fail
-              console.error(`Error fetching creator for class ${classItem.title}: ${err.message}`);
+              console.error(
+                `Error fetching creator for class ${classItem.title}: ${err.message}`
+              );
               return { ...classItem, creatorName: "Unknown" }; // Fallback creator name
             }
           })
