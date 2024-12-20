@@ -56,54 +56,55 @@ function Signup(){
         }
     }
 
-    return(
-        <>
-        <img src="/logo.png" alt="Topic Trail Logo" className="logo" />
+    return (
+      <>
         <div className="container">
-            <h1>Signup</h1>
-            <form onSubmit={handleSignup}>
-                <div>
-                    <label htmlFor="name">Name</label>
-                    <input
-                        onChange={handleChange}
-                        type= "text"
-                        name= "name"
-                        autoFocus
-                        placeholder= "Enter your name"
-                        value= {signupInfo.name}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        onChange={handleChange}
-                        type= "email"
-                        name= "email"
-                        autoFocus
-                        placeholder= "Enter your Email"
-                        value= {signupInfo.email}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        onChange={handleChange}
-                        type= "password"
-                        name= "password"
-                        autoFocus
-                        placeholder= "Enter a Password"
-                        value= {signupInfo.password}
-                    />
-                </div>
-                <button type='submit'>Signup</button>
-                <span>Already have an account?
-                    <Link to="/login">Login</Link>
-                </span>
-            </form>
-            <ToastContainer/>
+          <img src="/logo.png" alt="Topic Trail Logo" className="logo" />
+          <h1>Signup</h1>
+          <form onSubmit={handleSignup}>
+            <div>
+              <label htmlFor="name">Name</label>
+              <input
+                onChange={handleChange}
+                type="text"
+                name="name"
+                autoFocus
+                placeholder="Enter your name"
+                value={signupInfo.name}
+              />
+            </div>
+            <div>
+              <label htmlFor="email">Email</label>
+              <input
+                onChange={handleChange}
+                type="email"
+                name="email"
+                autoFocus
+                placeholder="Enter your Email"
+                value={signupInfo.email}
+              />
+            </div>
+            <div>
+              <label htmlFor="password">Password</label>
+              <input
+                onChange={handleChange}
+                type="password"
+                name="password"
+                autoFocus
+                placeholder="Enter a Password"
+                value={signupInfo.password}
+              />
+            </div>
+            <button type="submit">Signup</button>
+            <span>
+              Already have an account?
+              <Link to="/login">Login</Link>
+            </span>
+          </form>
+          <ToastContainer />
         </div>
-        </>
-    )
+      </>
+    );
 }
 
 export default Signup

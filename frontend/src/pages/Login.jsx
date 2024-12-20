@@ -57,43 +57,44 @@ function Login(){
         }
     }
 
-    return(
-        <>
-        <img src="/logo.png" alt="Topic Trail Logo" className="logo" />
+    return (
+      <>
         <div className="container">
-            <h1>Login</h1>
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        onChange={handleChange}
-                        type= "email"
-                        name= "email"
-                        autoFocus
-                        placeholder= "Enter your Email"
-                        value= {loginInfo.email}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        onChange={handleChange}
-                        type= "password"
-                        name= "password"
-                        autoFocus
-                        placeholder= "Enter a Password"
-                        value= {loginInfo.password}
-                    />
-                </div>
-                <button type='submit'>Login</button>
-                <span>Don't have an account?
-                    <Link to="/signup">Signup</Link>
-                </span>
-            </form>
-            <ToastContainer/>
+          <img src="/logo.png" alt="Topic Trail Logo" className="logo" />
+          <h1>Login</h1>
+          <form onSubmit={handleLogin}>
+            <div>
+              <label htmlFor="email">Email</label>
+              <input
+                onChange={handleChange}
+                type="email"
+                name="email"
+                autoFocus
+                placeholder="Enter your Email"
+                value={loginInfo.email}
+              />
+            </div>
+            <div>
+              <label htmlFor="password">Password</label>
+              <input
+                onChange={handleChange}
+                type="password"
+                name="password"
+                autoFocus
+                placeholder="Enter a Password"
+                value={loginInfo.password}
+              />
+            </div>
+            <button type="submit">Login</button>
+            <span>
+              Don't have an account?
+              <Link to="/signup">Signup</Link>
+            </span>
+          </form>
+          <ToastContainer />
         </div>
-        </>
-    )
+      </>
+    );
 }
 
 export default Login
