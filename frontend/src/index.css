@@ -25,10 +25,10 @@ body{
 }
 
 .logo {
-  display: block;      /* Ensure it is a block-level element */
-  margin: 0 auto;      /* Center it horizontally */
-  width: 250px;        /* Set a specific width for the logo */
-  height: auto;        /* Maintain the aspect ratio */
+  display: block;      
+  margin: 0 auto;      
+  width: 250px;        
+  height: auto;        
 }
 
 .container{
@@ -38,9 +38,9 @@ body{
   width: 100%;
   max-width: 400px;
   box-shadow: 8px 8px 24px 0px #a826aa;
-}
+} */
 
-.container > h1{
+ .container > h1{
   margin-bottom: 20px;
   color:#160c27;
   font-family: PT Serif, sans-serif;
@@ -77,4 +77,4 @@ button{
   padding: 10px;
   cursor: pointer;
   margin: 10px 0;
-}
+} 
