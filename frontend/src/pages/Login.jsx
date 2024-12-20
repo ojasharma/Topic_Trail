@@ -58,6 +58,8 @@ function Login(){
     }
 
     return(
+        <>
+        <img src="/logo.png" alt="Topic Trail Logo" className="logo" />
         <div className="container">
             <h1>Login</h1>
             <form onSubmit={handleLogin}>
@@ -90,6 +92,7 @@ function Login(){
             </form>
             <ToastContainer/>
         </div>
+        </>
     )
 }
 

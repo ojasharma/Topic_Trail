@@ -57,6 +57,8 @@ function Signup(){
     }
 
     return(
+        <>
+        <img src="/logo.png" alt="Topic Trail Logo" className="logo" />
         <div className="container">
             <h1>Signup</h1>
             <form onSubmit={handleSignup}>
@@ -100,6 +102,7 @@ function Signup(){
             </form>
             <ToastContainer/>
         </div>
+        </>
     )
 }
 

@@ -24,6 +24,13 @@ body{
   align-items: center;
 }
 
+.logo {
+  display: block;      /* Ensure it is a block-level element */
+  margin: 0 auto;      /* Center it horizontally */
+  width: 250px;        /* Set a specific width for the logo */
+  height: auto;        /* Maintain the aspect ratio */
+}
+
 .container{
   background-color: #d5dc11;
   padding: 32px 48px;
@@ -71,3 +78,4 @@ button{
   cursor: pointer;
   margin: 10px 0;
 }
+
