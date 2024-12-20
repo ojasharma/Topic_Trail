@@ -3,8 +3,9 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const AuthRouter = require('./Routes/AuthRouter');
-const ProductRouter = require('./Routes/ProductRouter');
-const ClassRouter = require('./Routes/ClassRouter')
+// const ProductRouter = require('./Routes/ProductRouter');
+const ClassRouter = require('./Routes/ClassRouter');
+const userRoutes = require('./Routes/User');
 
 require('dotenv').config();
 require('./Models/db');
@@ -19,7 +20,7 @@ app.use(cors());
 app.use('/auth', AuthRouter);
 // app.use('/products', ProductRouter);
 app.use('/classes',ClassRouter);
-
+app.use("/users", userRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`)
