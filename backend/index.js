@@ -1,3 +1,4 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 require("dotenv").config();
 const express = require("express");
 const app = express();
@@ -11,7 +12,7 @@ const VideoRouter = require("./Routes/VideoRouter");
 
 require("./Models/db");
 const PORT = process.env.PORT || 8080;
-
+console.log("NODE_EXTRA_CA_CERTS:", process.env.NODE_EXTRA_CA_CERTS);
 // Increase payload limit for video uploads
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
