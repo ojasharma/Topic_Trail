@@ -1,63 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import Header from "../assets/Header";
-import { handleError } from "../utils";
-import { ToastContainer } from "react-toastify";
+// ClassDetails.js
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import ClassHeader from '../assets/ClassHeader'; // Import ClassHeader
+import './ClassDetails.css';
 
 const ClassDetails = () => {
-  const { id } = useParams(); // Get the class ID from URL parameters
-  const [classData, setClassData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem("token");
+  const { id } = useParams(); // Get the class ID from the URL parameters
+  const classCode = localStorage.getItem("classCode"); // Retrieve class code from localStorage
+  const [copySuccess, setCopySuccess] = useState(false);
 
-  useEffect(() => {
-    const fetchClassDetails = async () => {
-      if (!token) {
-        handleError("No token found. Please log in.");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetch(`http://localhost:8080/classes/${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+  const handleCopyClassCode = () => {
+    if (classCode) {
+      navigator.clipboard.writeText(classCode)
+        .then(() => {
+          setCopySuccess(true);
+          toast.success("Class code copied to clipboard!");
+        })
+        .catch((err) => {
+          setCopySuccess(false);
+          toast.error("Failed to copy class code.");
         });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch class details");
-        }
-
-        const data = await response.json();
-        setClassData(data);
-      } catch (err) {
-        handleError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchClassDetails();
-  }, [id, token]);
+    } else {
+      toast.error("No class code available to copy.");
+    }
+  };
 
   return (
     <div>
-      <Header />
+      <ClassHeader 
+        classCode={classCode} 
+        handleCopyClassCode={handleCopyClassCode} 
+        copySuccess={copySuccess}
+      />
       <div className="class-details-container">
-        {loading ? (
-          <p>Loading class details...</p>
-        ) : classData ? (
-          <div className="class-details">
-            <h2>{classData.title}</h2>
-            <p>{classData.description}</p>
-            {/* Add more class details as needed */}
-          </div>
-        ) : (
-          <p>Class not found</p>
-        )}
+        <h2>Class Details</h2>
+        {/* Display additional class details here */}
         <ToastContainer />
       </div>
     </div>
