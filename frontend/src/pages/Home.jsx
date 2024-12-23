@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Header from "../assets/Header";
+import Header from "../components/Header";
 import "./Home.css";
 import { ToastContainer, toast } from "react-toastify";
 import { handleError } from "../utils";
