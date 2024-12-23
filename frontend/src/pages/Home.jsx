@@ -76,9 +76,14 @@ function Home() {
     fetchClasses();
   }, [token]);
 
-  const handleCardClick = (classId) => {
+  const handleCardClick = (classId, classCode) => {
+    // Store the class code in localStorage
+    localStorage.setItem("classCode", classCode);
+    
+    // Navigate to the Class Details page
     navigate(`/class/${classId}`);
   };
+  
 
   const handleLeaveClass = async (classId, event) => {
     event.stopPropagation(); // Prevents triggering parent `onClick` events
@@ -170,7 +175,7 @@ function Home() {
               <div
                 key={classItem._id}
                 className="class-card"
-                onClick={() => handleCardClick(classItem._id)}
+                onClick={() => handleCardClick(classItem._id, classItem.code)}
                 role="button"
               >
                 <h2>{classItem.title}</h2>
