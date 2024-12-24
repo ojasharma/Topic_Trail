@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import ClassHeader from '../assets/ClassHeader'; // Import ClassHeader
+import ClassHeader from '../components/ClassHeader'; // Import ClassHeader
 import './ClassDetails.css';
 
 const ClassDetails = () => {
