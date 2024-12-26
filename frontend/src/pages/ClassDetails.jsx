@@ -111,7 +111,10 @@ const ClassDetails = () => {
         ) : (
           <div className="videos-grid">
             {videos.map((video) => (
-              <div key={video._id} className="video-card">
+              <div key={video._id}
+              className="video-card"
+              onClick={() => window.open(video.cloudinaryUrl, "_blank")}
+              role="button">
                 <h2 className="video-title">{video.title}</h2>
                 <button
                   className="delete-button"
