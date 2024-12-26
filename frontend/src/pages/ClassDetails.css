@@ -28,6 +28,7 @@
   text-align: center;
   padding: 10px;
   height: 150px; /* Adjust the height as needed */
+  position: relative; /* Required for absolute positioning of the button */
 }
 
 .video-card:hover {
@@ -42,20 +43,25 @@
 }
 
 .delete-button {
-  margin-top: 10px; /* Add spacing above the button */
+  position: absolute; /* Position it absolutely inside the card */
+  bottom: 10px; /* 10px from the bottom */
+  right: 10px; /* 10px from the right */
   padding: 8px 15px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #fff;
   background-color: rgb(187, 34, 34);
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  width: 70px;
+  height: auto;
 }
 
 .delete-button:hover {
   background-color: #a00;
 }
+
 
 
 
