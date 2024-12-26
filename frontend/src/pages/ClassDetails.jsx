@@ -3,6 +3,7 @@ import ClassHeader from '../components/ClassHeader';
 import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import './ClassDetails.css'; // Assuming you will add CSS for the card layout
 
 const ClassDetails = () => {
   const { id: classId } = useParams(); // Extract classId from URL params
@@ -67,7 +68,7 @@ const ClassDetails = () => {
 
   return (
     <div className="class-details">
-      <ClassHeader classCode={classCode} />
+      <ClassHeader classCode={classCode} classId={classId} />
 
       <div className="class-details-content">
         <h1>Class Videos</h1>
