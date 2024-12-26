@@ -13,6 +13,7 @@ const ClassDetails = () => {
   const [classCode, setClassCode] = useState("");
   const [videos, setVideos] = useState([]); // State to store videos
   const [loading, setLoading] = useState(true); // State for loading spinner
+  const [selectedVideo, setSelectedVideo] = useState(null); // State for selected video to display in modal
   const token = localStorage.getItem("token"); // Fetch token from localStorage
 
   useEffect(() => {
@@ -97,6 +98,38 @@ const ClassDetails = () => {
     }
   };
 
+  const handleVideoClick = async (videoId) => {
+    if (!token) {
+      toast.error("You need to log in to view video details.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:8080/videos/${videoId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch video details.");
+      }
+  
+      const result = await response.json();
+      console.log('API Response:', result); // Add this line
+      console.log('Summary data:', result.summary); // Add this line
+      setSelectedVideo(result);
+    } catch (err) {
+      toast.error(err.message || "An error occurred while fetching video details.");
+    }
+  };
+
+  const closeModal = () => {
+    setSelectedVideo(null); // Close the modal
+  };
+
   return (
     <div className="class-details">
       <ClassHeader classCode={classCode} classId={classId} />
@@ -111,13 +144,15 @@ const ClassDetails = () => {
         ) : (
           <div className="videos-grid">
             {videos.map((video) => (
-              <div key={video._id}
-              className="video-card"
-              onClick={() => window.open(video.cloudinaryUrl, "_blank")}
-              role="button">
+              <div
+                key={video._id}
+                className="video-card"
+                onClick={() => handleVideoClick(video._id)} // Open video details in modal
+                role="button"
+              >
                 <h2 className="video-title">{video.title}</h2>
                 <button
-                  className="delete-button"
+                  className="deleteClass-button"
                   onClick={(e) => {
                     e.stopPropagation(); // Prevents triggering card click
                     handleDelete(video._id); // Call the delete function
@@ -130,6 +165,33 @@ const ClassDetails = () => {
           </div>
         )}
       </div>
+
+      {selectedVideo && (
+        <div className="video-modal">
+          <div className="modal-content">
+          {console.log('Selected Video in render:', selectedVideo)} // Add this line
+          {console.log('Summary in render:', selectedVideo.summary)} // Add this line
+            <button className="close-modal" onClick={closeModal}>X</button>
+            <h2>{selectedVideo.title}</h2>
+            <video controls>
+              <source src={selectedVideo.cloudinaryUrl} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <div className="video-summary">
+              <h3>Description</h3>
+              <p>{selectedVideo.description}</p>
+              <h3>Summary</h3>
+              {selectedVideo.summary.map((item, index) => (
+                <div key={index}>
+                  <h4>{item.title}</h4>
+                  <p>{item.content}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       <ToastContainer />
     </div>
   );
