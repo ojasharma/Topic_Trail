@@ -28,7 +28,7 @@ function Login(){
             return handleError('All fields are mandatory.')
         }
         try {
-            const url= "http://localhost:8080/auth/login" //this is for examle, we will add our backend url
+            const url= "http://localhost:8080/auth/login" //backend url
             const response = await fetch (url, {
                 method: "POST",
                 headers: {

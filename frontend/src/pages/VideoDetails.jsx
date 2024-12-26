@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import './VideoDetails.css'; // Create a new CSS file for styling this page
+import './VideoDetails.css';
 
 const VideoDetails = () => {
   const { videoId } = useParams(); // Extract videoId from URL params
