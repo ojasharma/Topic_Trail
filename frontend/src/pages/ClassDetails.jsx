@@ -66,6 +66,37 @@ const ClassDetails = () => {
     fetchVideos();
   }, [classId, token]);
 
+  const handleDelete = async (videoId) => {
+    if (!token) {
+      toast.error("You need to log in to delete videos.");
+      return;
+    }
+
+    const confirmDelete = window.confirm("Are you sure you want to delete this video?");
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`http://localhost:8080/videos/${videoId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to delete video.");
+      }
+
+      toast.success("Video deleted successfully!");
+      // Remove the deleted video from the state
+      setVideos(videos.filter((video) => video._id !== videoId));
+    } catch (err) {
+      toast.error(err.message || "An error occurred while deleting the video.");
+    }
+  };
+
   return (
     <div className="class-details">
       <ClassHeader classCode={classCode} classId={classId} />
@@ -80,13 +111,17 @@ const ClassDetails = () => {
         ) : (
           <div className="videos-grid">
             {videos.map((video) => (
-              <div
-                key={video._id}
-                className="video-card"
-                onClick={() => window.open(video.cloudinaryUrl, "_blank")}
-                role="button"
-              >
+              <div key={video._id} className="video-card">
                 <h2 className="video-title">{video.title}</h2>
+                <button
+                  className="delete-button"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevents triggering card click
+                    handleDelete(video._id); // Call the delete function
+                  }}
+                >
+                  Delete
+                </button>
               </div>
             ))}
           </div>

@@ -49,6 +49,9 @@ body {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  width: 80px;
+  height: auto;
+  font-size: medium;
 }
 
 .search-button:hover {
@@ -89,15 +92,19 @@ body {
 
 .upload-button-container {
   display: flex;
+  margin-right: 50px;
 }
 
 .upload-button {
+  width: 150px;
+  height: auto;
   padding: 10px 20px;
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: medium;
 }
 
 .upload-button:hover {
