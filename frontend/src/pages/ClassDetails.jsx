@@ -1,23 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import ClassHeader from '../components/ClassHeader';
-import { useParams } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import './ClassDetails.css'; // Assuming you will add CSS for the card layout
+import './ClassDetails.css';
 
 const ClassDetails = () => {
-  const { id: classId } = useParams(); // Extract classId from URL params
-
-  console.log('classId from URL:', classId);
-
+  const { id: classId } = useParams();
   const [classCode, setClassCode] = useState("");
-  const [videos, setVideos] = useState([]); // State to store videos
-  const [loading, setLoading] = useState(true); // State for loading spinner
-  const [selectedVideo, setSelectedVideo] = useState(null); // State for selected video to display in modal
-  const token = localStorage.getItem("token"); // Fetch token from localStorage
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    // Fetch the class code from localStorage
     const storedClassCode = localStorage.getItem('classCode');
     if (storedClassCode) {
       setClassCode(storedClassCode);
@@ -39,24 +34,20 @@ const ClassDetails = () => {
       }
 
       try {
-        // Fetch videos for the class
-        const response = await fetch(
-          `http://localhost:8080/videos/class/${classId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`http://localhost:8080/videos/class/${classId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch videos. Please try again.");
         }
 
         const result = await response.json();
-        setVideos(result); // Store videos in state
+        setVideos(result);
       } catch (err) {
         toast.error(err.message || "An error occurred while fetching videos.");
       } finally {
@@ -91,49 +82,19 @@ const ClassDetails = () => {
       }
 
       toast.success("Video deleted successfully!");
-      // Remove the deleted video from the state
       setVideos(videos.filter((video) => video._id !== videoId));
     } catch (err) {
       toast.error(err.message || "An error occurred while deleting the video.");
     }
   };
 
-  const handleVideoClick = async (videoId) => {
-    if (!token) {
-      toast.error("You need to log in to view video details.");
-      return;
-    }
-  
-    try {
-      const response = await fetch(`http://localhost:8080/videos/${videoId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error("Failed to fetch video details.");
-      }
-  
-      const result = await response.json();
-      console.log('API Response:', result); // Add this line
-      console.log('Summary data:', result.summary); // Add this line
-      setSelectedVideo(result);
-    } catch (err) {
-      toast.error(err.message || "An error occurred while fetching video details.");
-    }
-  };
-
-  const closeModal = () => {
-    setSelectedVideo(null); // Close the modal
+  const handleCardClick = (videoId) => {
+    window.location.href = `/video/${videoId}`; // Navigate to video details page
   };
 
   return (
     <div className="class-details">
       <ClassHeader classCode={classCode} classId={classId} />
-
       <div className="class-details-content">
         <h1>Class Videos</h1>
 
@@ -147,50 +108,26 @@ const ClassDetails = () => {
               <div
                 key={video._id}
                 className="video-card"
-                onClick={() => handleVideoClick(video._id)} // Open video details in modal
                 role="button"
+                onClick={() => handleCardClick(video._id)} // Make the card clickable
               >
                 <h2 className="video-title">{video.title}</h2>
-                <button
-                  className="deleteClass-button"
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevents triggering card click
-                    handleDelete(video._id); // Call the delete function
-                  }}
-                >
-                  Delete
-                </button>
+                <div className="video-actions">
+                  <button
+                    className="deleteClass-button"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent click on the card from firing the delete
+                      handleDelete(video._id);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
-
-      {selectedVideo && (
-        <div className="video-modal">
-          <div className="modal-content">
-          {console.log('Selected Video in render:', selectedVideo)} // Add this line
-          {console.log('Summary in render:', selectedVideo.summary)} // Add this line
-            <button className="close-modal" onClick={closeModal}>X</button>
-            <h2>{selectedVideo.title}</h2>
-            <video controls>
-              <source src={selectedVideo.cloudinaryUrl} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-            <div className="video-summary">
-              <h3>Description</h3>
-              <p>{selectedVideo.description}</p>
-              <h3>Summary</h3>
-              {selectedVideo.summary.map((item, index) => (
-                <div key={index}>
-                  <h4>{item.title}</h4>
-                  <p>{item.content}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
 
       <ToastContainer />
     </div>

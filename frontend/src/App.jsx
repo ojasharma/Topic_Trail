@@ -5,6 +5,7 @@ import Login from './pages/Login/'
 import Signup from './pages/Signup/'
 import Home from './pages/Home/'
 import ClassDetails from "./pages/ClassDetails";
+import VideoDetails from './pages/VideoDetails';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route path='/signup' element={<Signup />} />
       <Route path='/home' element={<Home />} />
       <Route path='/class/:id' element={<ClassDetails />} />
+      <Route path="/video/:videoId" element={<VideoDetails />} />
     </Routes>
   );
 }
