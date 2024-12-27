@@ -5,6 +5,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: Montserrat, sans-serif;
+  /* border: 1px solid red; */
 }
 
 label {
@@ -13,16 +14,20 @@ label {
 
 html,
 body{
-  background-color: #b5c4f2;
+  /* background-color: black; */
+ 
   height: 100%;
-  width: 100%
+  width: 100%;
+  margin: 0;
 }
 
 body{
   display: flex;
   justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  align-items: flex-start;
+   
+  /* flex-direction: column; */
+
 }
 
 .logo {
@@ -74,8 +79,16 @@ button{
   border: none;
   font-size: 20px;
   color: white;
-  border-radius: 10px;
+  border-radius: 3px;
   padding: 10px;
   cursor: pointer;
   margin: 10px 0;
 } 
+
+
+
+@media(max-width: 579px){
+  body{
+    align-items: center;
+  }
+}
