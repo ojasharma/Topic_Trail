@@ -10,6 +10,8 @@ const ClassDetails = () => {
   const [classCode, setClassCode] = useState("");
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [videoToDelete, setVideoToDelete] = useState(null);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -58,17 +60,14 @@ const ClassDetails = () => {
     fetchVideos();
   }, [classId, token]);
 
-  const handleDelete = async (videoId) => {
+  const handleDelete = async () => {
     if (!token) {
       toast.error("You need to log in to delete videos.");
       return;
     }
 
-    const confirmDelete = window.confirm("Are you sure you want to delete this video?");
-    if (!confirmDelete) return;
-
     try {
-      const response = await fetch(`http://localhost:8080/videos/${videoId}`, {
+      const response = await fetch(`http://localhost:8080/videos/${videoToDelete}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -82,10 +81,21 @@ const ClassDetails = () => {
       }
 
       toast.success("Video deleted successfully!");
-      setVideos(videos.filter((video) => video._id !== videoId));
+      setVideos(videos.filter((video) => video._id !== videoToDelete));
+      closeModal();
     } catch (err) {
       toast.error(err.message || "An error occurred while deleting the video.");
     }
+  };
+
+  const openModal = (videoId) => {
+    setVideoToDelete(videoId);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setVideoToDelete(null);
+    setIsModalOpen(false);
   };
 
   const handleCardClick = (videoId) => {
@@ -117,7 +127,7 @@ const ClassDetails = () => {
                     className="deleteClass-button"
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent click on the card from firing the delete
-                      handleDelete(video._id);
+                      openModal(video._id);
                     }}
                   >
                     Delete
@@ -128,6 +138,19 @@ const ClassDetails = () => {
           </div>
         )}
       </div>
+
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Confirm Deletion</h2>
+            <p>Are you sure you want to delete this video?</p>
+            <div className="modal-actions">
+              <button className="confirm-button" onClick={handleDelete}>Yes, Delete</button>
+              <button className="cancel-button" onClick={closeModal}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ToastContainer />
     </div>

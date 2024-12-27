@@ -12,8 +12,8 @@ const Modal = ({ isOpen, onClose, type }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const createurl = "http://localhost:8080/classes/create"; // Use correct URL for create
-    const joinUrl = "http://localhost:8080/classes/join"; // Add the correct URL for join
+    const createurl = "http://localhost:8080/classes/create";
+    const joinUrl = "http://localhost:8080/classes/join"; 
 
     const data = type === "create" ? { title } : { classCode }; // Send title for create, classCode for join
 
