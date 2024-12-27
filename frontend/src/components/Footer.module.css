@@ -1,0 +1,65 @@
+.footer {
+  background-color: #392759; /* Dark navy background */
+  color: white; /* Text color */
+  width: 100%;
+  height: 250px; /* Large footer height for larger screens */
+  display: flex;
+  align-items: center;
+  position: absolute; /* Positioned off-screen */
+  bottom: -250px; /* Push footer below viewport */
+  left: 0;
+  font-family: "Lilita One", serif !important;
+}
+
+.content {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: flex-start; /* Align all items to the left */
+  justify-content: center; /* Center content vertically */
+  margin-left: 20px; /* Add padding from the left edge */
+  gap: 15px; /* Spacing between lines */
+}
+
+.footer p {
+  font-family: "Lilita One", serif !important; /* Apply the font directly to paragraphs */
+  opacity: 20%;
+}
+
+.githubIcon {
+  width: 30px; /* Consistent size for logos */
+  height: 30px;
+  margin-right: 10px; /* Space between the logo and text */
+  filter: invert(100%); /* Invert colors for light theme compatibility */
+  vertical-align: middle; /* Align logo with text */
+}
+
+/* Ensure footer is properly positioned in the layout */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure root container fills viewport */
+  position: relative;
+}
+
+footer {
+  flex-shrink: 0; /* Footer stays at the bottom */
+}
+
+/* Media query for widths 445px or smaller */
+@media (max-width: 445px) {
+  .footer {
+    height: 150px; /* Adjust footer height for small screens */
+    bottom: -150px; /* Push footer below viewport accordingly */
+  }
+}
