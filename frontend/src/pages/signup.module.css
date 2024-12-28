@@ -1,0 +1,187 @@
+
+/* Reset styles */
+*,
+::before,
+::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Montserrat, sans-serif;
+}
+
+html,
+body {
+  /* background-image: url('/public/bg.jpg'); Path to your image */
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  font-family: Montserrat, sans-serif;
+  display: flex;
+  align-items: flex-start;
+  /* background-color: #160c27; */
+}
+
+.page{
+    width: 98.9vw;
+    height: auto;
+    /* border: 1px red ; */
+    /* background-color: aqua; */
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+/* Logo styles */
+.logo {
+  position: absolute;
+  top: -1px;
+  left: 10px;
+  width: 200px;
+  height: auto;
+}
+
+/* Container styles */
+/* Update Container Styles */
+.container {
+  /* background-color: #d5dc11; */
+  padding: 32px 48px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 425px;
+  /* border:1px, red !important; */
+  /* box-shadow: 8px 8px 24px 0px #a826aa; */
+  margin: 100px 0 0 50px; /* Align container to the left */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: flex-start; /* Align contents to the left */
+}
+
+/* Centered Header (Optional) */
+.container > h1 {
+  margin-bottom: 20px;
+  color: #160c27;
+  font-family: PT Serif, sans-serif;
+  font-weight: 600;
+  text-align: left; /* Align header text to the left */
+  width: 100%;
+  
+  
+}
+
+/* Form styles */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%; /* Ensure full width alignment */
+}
+
+form label {
+  font-family: Roboto !important;
+  font-size: 15px;
+  text-align: left; /* Align labels to the left */
+}
+
+form input {
+  width: 100%; /* Ensure full width alignment */
+  font-size: 20px;
+  padding: 10px;
+  outline: none;
+  border: 2px solid black;
+  border-radius: 3px;
+}
+
+form input::placeholder {
+  font-size: 12px;
+  font-style: italic;
+  font-family: sans-serif;
+  text-align: left; /* Align placeholder text to the left */
+}
+
+button {
+  background-color: #392759;
+  border: none;
+  font-size: 20px;
+  color: white;
+  width: 100%;
+  border-radius: 3px;
+  padding: 10px;
+  cursor: pointer;
+  margin: 10px 0;
+  align-self: flex-start; /* Align button to the left */
+}
+.sideimg{
+    
+    width: auto;
+    height: 101vh;
+    transform: translateX(0px);
+}
+@media(max-width: 1031px){
+    .page{
+    /* display: block; */
+    justify-content: center;    
+    }
+
+    .sideimg{
+        display: none;
+        /* width: auto; */
+        /* height: 101vh; */
+        /* transform: translateX(100px); */
+    }
+    
+}
+
+@media (max-width: 579px) {
+  /* Container Styles for Small Screens */
+  .container {
+    max-width: 300px; /* Slightly bigger width for a compact feel */
+    margin: 50px auto; /* Center container horizontally */
+    padding: 20px;
+    box-shadow: none; /* Simplify design for small screens */
+    /* border: 1px solid #ccc; Add a light border for clarity */
+    /* background-color: #f9f9f9; Light background for better contrast */
+    gap: 15px; /* Slightly increased spacing between elements */
+  }
+
+  /* Header Styles */
+  .container > h1 {
+    font-size: 30px;
+    margin-top: 30px; /* Adjust font size for readability */
+    text-align: left; /* Center the header text */
+  }
+
+  /* Form Styles */
+  form {
+    gap: 15px; /* Increase spacing between inputs */
+  }
+
+  form label {
+    font-size: 16px; /* Adjust label font size */
+  }
+
+  form input {
+    font-size: 16px; /* Slightly smaller input text */
+    padding: 8px;
+    border-radius: 5px; /* Rounded corners for a mobile feel */
+  }
+
+  form input::placeholder {
+    font-size: 12px; /* Smaller placeholder text */
+  }
+
+  /* Button Styles */
+  button {
+    width: 100%; /* Full-width button for easy tapping */
+    font-size: 18px; /* Slightly smaller button text */
+    padding: 12px; /* Larger tap target */
+  }
+  .sideimg{
+    display: none;
+  }
+  
+}

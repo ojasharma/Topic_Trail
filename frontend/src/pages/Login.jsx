@@ -96,6 +96,7 @@ function Login() {
         <div className={styles.imgside}>
           <img src="/bg.jpg" alt="bg" className={styles.sideimg} />
         </div>
+        <ToastContainer />
       </div>
     </>
   );
