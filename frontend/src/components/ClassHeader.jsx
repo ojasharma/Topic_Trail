@@ -1,17 +1,17 @@
+// ClassHeader.js
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import "./ClassHeader.css";
 
-const ClassHeader = ({ classCode, classId }) => {
+const ClassHeader = ({ classCode, classId, onSearch }) => {
   const [copied, setCopied] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showUploadModal, setShowUploadModal] = useState(false); // State to toggle the popup modal
+  const [showUploadModal, setShowUploadModal] = useState(false);
   const [videoFile, setVideoFile] = useState(null);
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
-  const [isUploading, setIsUploading] = useState(false); // State for upload status
+  const [isUploading, setIsUploading] = useState(false);
 
-  // Handle copy class code to clipboard
   const handleCopyClick = () => {
     navigator.clipboard
       .writeText(classCode)
@@ -25,28 +25,23 @@ const ClassHeader = ({ classCode, classId }) => {
       });
   };
 
-  // Handle search input change
   const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+    const value = e.target.value;
+    setSearchQuery(value);
+    onSearch(value);
   };
 
-  const handleSearchClick = () => {
-    toast.info(`Searching for: ${searchQuery}`);
-  };
-
-  // Handle file input change (video file)
   const handleFileChange = (e) => {
     setVideoFile(e.target.files[0]);
   };
 
-  // Handle video upload
   const handleUploadClick = async () => {
     if (!videoFile || !videoTitle || !videoDescription) {
       toast.error("Please fill in all fields and select a video.");
       return;
     }
 
-    setIsUploading(true); // Start uploading, disable buttons
+    setIsUploading(true);
 
     const formData = new FormData();
     formData.append("video", videoFile);
@@ -70,28 +65,23 @@ const ClassHeader = ({ classCode, classId }) => {
       const result = await response.json();
       toast.success(result.message || "Video uploaded successfully!");
 
-      // Reset form fields after upload
       setVideoFile(null);
       setVideoTitle("");
       setVideoDescription("");
-
-      // Close modal after successful upload
       setShowUploadModal(false);
     } catch (error) {
       toast.error(error.message || "An error occurred during video upload.");
     } finally {
-      setIsUploading(false); // Re-enable buttons
+      setIsUploading(false);
     }
   };
 
   return (
     <div className="class-header">
-      {/* Logo Section */}
       <div className="logo-container">
         <img src="/logo.png" alt="Logo" className="logo" />
       </div>
 
-      {/* Search Section */}
       <div className="search-container">
         <input
           type="text"
@@ -100,12 +90,8 @@ const ClassHeader = ({ classCode, classId }) => {
           onChange={handleSearchChange}
           placeholder="Search..."
         />
-        <button className="search-button" onClick={handleSearchClick}>
-          Search
-        </button>
       </div>
 
-      {/* Class Code Section */}
       <div className="class-code-container">
         <h2>Class Code: {classCode}</h2>
         <button className="copy-button" onClick={handleCopyClick}>
@@ -113,18 +99,16 @@ const ClassHeader = ({ classCode, classId }) => {
         </button>
       </div>
 
-      {/* Upload Button */}
       <div className="upload-button-container">
         <button
           className="upload-button"
           onClick={() => setShowUploadModal(true)}
-          disabled={isUploading} // Disable button while uploading
+          disabled={isUploading}
         >
           {isUploading ? "Uploading..." : "Upload Video"}
         </button>
       </div>
 
-      {/* Upload Modal */}
       {showUploadModal && (
         <div className="modal-overlay">
           <div className="upload-modal">
@@ -134,31 +118,28 @@ const ClassHeader = ({ classCode, classId }) => {
               placeholder="Video Title"
               value={videoTitle}
               onChange={(e) => setVideoTitle(e.target.value)}
-              disabled={isUploading} // Disable fields during upload
+              disabled={isUploading}
             />
             <textarea
               placeholder="Video Description"
               value={videoDescription}
               onChange={(e) => setVideoDescription(e.target.value)}
-              disabled={isUploading} // Disable fields during upload
+              disabled={isUploading}
             />
             <input
               type="file"
               accept="video/*"
               onChange={handleFileChange}
-              disabled={isUploading} // Disable file input during upload
+              disabled={isUploading}
             />
             <div className="modal-buttons">
-              <button
-                onClick={handleUploadClick}
-                disabled={isUploading} // Disable upload button during upload
-              >
+              <button onClick={handleUploadClick} disabled={isUploading}>
                 {isUploading ? "Uploading..." : "Upload"}
               </button>
               <button
                 className="cancel-button"
                 onClick={() => setShowUploadModal(false)}
-                disabled={isUploading} // Disable cancel button during upload
+                disabled={isUploading}
               >
                 Cancel
               </button>
