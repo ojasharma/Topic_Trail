@@ -1,8 +1,7 @@
-const cloudinary = require('cloudinary').v2;
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-
+const cloudinary = require("cloudinary").v2;
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 const https = require("https");
 
 cloudinary.config({
@@ -15,11 +14,9 @@ cloudinary.config({
   }),
 });
 
-// Configure local storage for temporary files
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const tempDir = path.join(process.cwd(), 'temp');
-    // Create temp directory if it doesn't exist
+    const tempDir = path.join(process.cwd(), "temp");
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true });
     }
@@ -27,7 +24,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname));
-  }
+  },
 });
 
 class CloudinaryService {
@@ -38,25 +35,38 @@ class CloudinaryService {
   static async uploadVideo(file) {
     try {
       console.log("Starting Cloudinary upload for:", file.path);
-      
+
       return new Promise((resolve, reject) => {
-        cloudinary.uploader.upload(file.path, {
-          resource_type: "video",
-          folder: "course-videos",
-        }, (error, result) => {
-          if (error) {
-            console.error("Cloudinary upload failed:", error);
-            reject(error);
-            return;
+        cloudinary.uploader.upload(
+          file.path,
+          {
+            resource_type: "video",
+            folder: "course-videos",
+            eager: [
+              // Add eager transformation for thumbnail
+              { width: 320, height: 180, crop: "fill", format: "jpg" },
+            ],
+            eager_async: false,
+          },
+          (error, result) => {
+            if (error) {
+              console.error("Cloudinary upload failed:", error);
+              reject(error);
+              return;
+            }
+
+            console.log("Cloudinary upload successful:", result);
+            resolve({
+              url: result.secure_url,
+              public_id: result.public_id,
+              duration: result.duration || 0,
+              thumbnailUrl:
+                result.eager && result.eager[0]
+                  ? result.eager[0].secure_url
+                  : null,
+            });
           }
-          
-          console.log("Cloudinary upload successful:", result);
-          resolve({
-            url: result.secure_url,
-            public_id: result.public_id,
-            duration: result.duration || 0
-          });
-        });
+        );
       });
     } catch (error) {
       console.error("Upload error:", error);
@@ -67,6 +77,8 @@ class CloudinaryService {
   static async deleteVideo(publicId) {
     try {
       await cloudinary.uploader.destroy(publicId, { resource_type: "video" });
+      // Also delete the thumbnail if it exists
+      await cloudinary.uploader.destroy(`${publicId}.jpg`);
     } catch (error) {
       console.error("Cloudinary delete error:", error);
       throw new Error("Failed to delete video from Cloudinary");

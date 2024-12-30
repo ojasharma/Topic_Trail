@@ -35,6 +35,19 @@ const upload = multer({
 });
 
 // Routes with bound controller methods
+// Note: Order matters! More specific routes should come before dynamic routes
+
+// 1. Static routes first
+router.get("/search", ensureAuthenticated, VideoController.searchVideos);
+
+// 2. Class-specific routes
+router.get(
+  "/class/:classId",
+  ensureAuthenticated,
+  VideoController.getClassVideos.bind(VideoController)
+);
+
+// 3. Upload route
 router.post(
   "/upload",
   ensureAuthenticated,
@@ -42,12 +55,7 @@ router.post(
   VideoController.uploadVideo.bind(VideoController)
 );
 
-router.get(
-  "/class/:classId",
-  ensureAuthenticated,
-  VideoController.getClassVideos.bind(VideoController)
-);
-
+// 4. Dynamic routes last (to avoid catching static routes)
 router.get(
   "/:videoId",
   ensureAuthenticated,

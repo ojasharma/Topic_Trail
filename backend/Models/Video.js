@@ -25,6 +25,11 @@ const VideoSchema = new Schema({
     type: String,
     required: true,
   },
+  thumbnailUrl: {
+    // Added this field
+    type: String,
+    default: null,
+  },
   classId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "classes",

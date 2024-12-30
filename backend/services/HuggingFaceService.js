@@ -4,7 +4,7 @@ const axios = require("axios");
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; // Disable SSL verification
 
-const HUGGINGFACE_API_KEY = "";
+const HUGGINGFACE_API_KEY = "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";
 
 // Create a client for Hugging Face Inference
 const client = new HfInference(HUGGINGFACE_API_KEY);
@@ -21,7 +21,7 @@ async function generateStructuredSummary(text) {
       messages: [
         {
           role: "user",
-          content: `[Strictly adhere to the formatting rules] Your response should start with a topics list: <T><1>Topic one</1><2>Topic two</2></T>, after ending the topics list with </T> start the summary list, <A><1>Summary of topic one</1><2>Summary of topic two</2></A>.ALL THE TEXT SHOULD BE INSIDE THESE HTML LIKE DIVISONS.ALL TOPICS SHOULD HAVE A CORRESPONDING SUMMARY.THE SUMMARY SHOULD BE ACCCORDING TO THE SCRIPT (PHRASE IT LIKE: The instructr says that...) The topics should be chronological according to the lecture script I am providing. Descriptive 100 words of summary for each topic. Text: "${text}"`,
+          content: `[Strictly adhere to the formatting rules] Your reply should be in JSON format where each key is a topic and the value of the key is the topic's summary. ALL TOPICS SHOULD HAVE A CORRESPONDING SUMMARY.THE SUMMARY SHOULD BE A BREIF OF WHAT'S INSIDE THE TEXT(PHRASE IT LIKE: The instructr says that...) The topics should be chronological according to the lecture script I am providing. Descriptive 100 words of summary for each topic. Text: "${text}"`,
         },
       ],
       max_tokens: 4000,
@@ -45,32 +45,37 @@ function parseStructuredSummary(content) {
   try {
     console.log("Raw Summary Content:", content);
 
-    // Remove newlines and extra spaces to make parsing easier
-    const cleanContent = content.replace(/\n/g, " ").replace(/\s+/g, " ");
-
-    // Extract sections
-    const topicsSection = cleanContent.match(/<T>(.*?)<\/T>/s)?.[1].trim();
-    const summariesSection = cleanContent.match(/<A>(.*?)<\/A>/s)?.[1].trim();
-
-    console.log("Cleaned Topics Section:", topicsSection);
-    console.log("Cleaned Summaries Section:", summariesSection);
-
-    if (!topicsSection || !summariesSection) {
-      throw new Error("Missing topics or summaries section");
+    // First, try to parse the JSON string if it isn't already an object
+    let jsonContent;
+    if (typeof content === "string") {
+      // Remove any leading/trailing whitespace and handle potential markdown code block syntax
+      const cleanContent = content.trim().replace(/```json\s*|\s*```/g, "");
+      jsonContent = JSON.parse(cleanContent);
+    } else {
+      jsonContent = content;
     }
 
-    // Split by numbered tags and filter out empty strings
-    const topics = topicsSection.split(/<\d+>/).filter(Boolean);
-    const summaries = summariesSection.split(/<\d+>/).filter(Boolean);
-
-    console.log("Split Topics:", topics);
-    console.log("Split Summaries:", summaries);
-
-    // Create result array
-    const result = topics.map((topic, index) => ({
-      title: topic.trim(),
-      content: summaries[index] ? summaries[index].trim() : "",
+    // Transform the JSON object into an array of SummaryItemSchema-compatible objects
+    const result = Object.entries(jsonContent).map(([title, content]) => ({
+      title: title.trim(),
+      content: content.trim(),
     }));
+
+    // Validate the structure
+    result.forEach((item, index) => {
+      if (!item.title || !item.content) {
+        throw new Error(
+          `Invalid summary item at index ${index}: missing title or content`
+        );
+      }
+
+      // Ensure title and content are strings
+      if (typeof item.title !== "string" || typeof item.content !== "string") {
+        throw new Error(
+          `Invalid summary item at index ${index}: title and content must be strings`
+        );
+      }
+    });
 
     console.log("Final Processed Result:", result);
 
