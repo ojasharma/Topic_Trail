@@ -1,31 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Header from "../components/Header";
-import "./Home.css";
+import styles from "./Home.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import { handleError } from "../utils";
 import { useNavigate } from "react-router-dom";
+import { MoreVertical } from "lucide-react";
+import { ThemeContext } from "../components/ThemeContext"; // Importing ThemeContext
 
 function Home() {
-  const [classes, setClasses] = useState([]);
+  const [allClasses, setAllClasses] = useState([]);
+  const [yourClasses, setYourClasses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const [filter, setFilter] = useState("all");
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+
+  const { isDarkMode } = useContext(ThemeContext); // Accessing dark mode state
 
   useEffect(() => {
     const fetchClasses = async () => {
       if (!token) {
-        handleError("No token found. Please log in.");
+        console.error("No token found. Please log in.");
         setLoading(false);
         return;
       }
 
       try {
-        // Fetch classes from the backend
         const response = await fetch("http://localhost:8080/classes", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -34,39 +40,49 @@ function Home() {
         }
 
         const result = await response.json();
-        const classesWithCreators = await Promise.all(
+        const userId = JSON.parse(atob(token.split(".")[1]))._id;
+
+        const enrichedClasses = await Promise.all(
           result.classes.map(async (classItem) => {
             try {
-              // Fetch creator details
-              const creatorResponse = await fetch(
-                `http://localhost:8080/users/${classItem.creator}`,
+              const videosResponse = await fetch(
+                `http://localhost:8080/videos/class/${classItem._id}`,
                 {
                   method: "GET",
                   headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
                   },
                 }
               );
 
-              if (!creatorResponse.ok) {
-                throw new Error("Failed to fetch creator details.");
-              }
+              const videosData = await videosResponse.json();
 
-              const creatorData = await creatorResponse.json();
-              return { ...classItem, creatorName: creatorData.name };
+              return {
+                ...classItem,
+                thumbnailUrl:
+                  videosData.length > 0 ? videosData[0].thumbnailUrl : null,
+              };
             } catch (err) {
-              // Fallback if creator details fail
               console.error(
-                `Error fetching creator for class ${classItem.title}: ${err.message}`
+                `Error fetching videos for class ${classItem.title}: ${err.message}`
               );
-              return { ...classItem, creatorName: "Unknown" };
+              return {
+                ...classItem,
+                thumbnailUrl: null,
+              };
             }
           })
         );
 
-        setClasses(classesWithCreators);
+        const yourClasses = enrichedClasses.filter(
+          (c) => c.creator._id === userId
+        );
+
+        setYourClasses(yourClasses);
+        setAllClasses(enrichedClasses);
       } catch (err) {
+        console.error("Error in fetchClasses:", err.message);
         handleError(err.message);
       } finally {
         setLoading(false);
@@ -77,129 +93,145 @@ function Home() {
   }, [token]);
 
   const handleCardClick = (classId, classCode) => {
-    // Store the class code in localStorage
     localStorage.setItem("classCode", classCode);
-    
-    // Navigate to the Class Details page
     navigate(`/class/${classId}`);
-  };
-  
-
-  const handleLeaveClass = async (classId, event) => {
-    event.stopPropagation(); // Prevents triggering parent `onClick` events
-
-    if (!token) {
-      toast.error("Please log in to leave a class.");
-      return;
-    }
-
-    try {
-      const response = await fetch(`http://localhost:8080/classes/${classId}/leave`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to leave the class.");
-      }
-
-      setClasses((prevClasses) => {
-        const updatedClasses = prevClasses.filter((classItem) => classItem._id !== classId);
-        return updatedClasses;
-      });
-
-      toast.success(result.message || "You have left the class.");
-    } catch (err) {
-      toast.error(err.message || "An error occurred.");
-    }
   };
 
   const handleDeleteClass = async (classId, event) => {
     event.stopPropagation();
-
-    if (!token) {
-      toast.error("Please log in to delete a class.");
-      return;
-    }
+    setOpenMenuId(null);
 
     try {
       const response = await fetch(`http://localhost:8080/classes/${classId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
-      const result = await response.json();
-
       if (!response.ok) {
-        if (response.status === 403) {
-          throw new Error("You are not authorized to delete this class.");
-        }
-        if (response.status === 404) {
-          throw new Error("Class not found.");
-        }
-        throw new Error(result.message || "Failed to delete the class.");
+        throw new Error("Failed to delete the class.");
       }
 
-      setClasses((prevClasses) => {
-        const updatedClasses = prevClasses.filter((classItem) => classItem._id !== classId);
-        return updatedClasses;
-      });
-
-      toast.success(result.message || "Class deleted successfully.");
+      setYourClasses((prev) => prev.filter((c) => c._id !== classId));
+      toast.success("Class deleted successfully.");
     } catch (err) {
       toast.error(err.message || "An error occurred.");
     }
   };
 
-  return (
-    <div>
-      <Header />
-      <div className="spacer"></div>
-      <div className="home-container">
-        <h1>Your Classes</h1>
-        {loading ? (
-          <p>Loading classes...</p>
-        ) : classes.length === 0 ? (
-          <p>You are not part of any classes yet.</p>
+  const handleLeaveClass = async (classId, event) => {
+    event.stopPropagation();
+    setOpenMenuId(null);
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/classes/${classId}/leave`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to leave the class.");
+      }
+
+      setAllClasses((prev) => prev.filter((c) => c._id !== classId));
+      toast.success("You have left the class.");
+    } catch (err) {
+      console.error("Error leaving class:", err.message);
+      toast.error(err.message || "An error occurred.");
+    }
+  };
+
+  const ClassCard = ({ classItem, isCreator }) => (
+    <div
+      className={styles.classCard}
+      onClick={() => handleCardClick(classItem._id, classItem.code)}
+      role="button"
+    >
+      <div className={styles.classThumbnail}>
+        {classItem.thumbnailUrl ? (
+          <img
+            src={classItem.thumbnailUrl || "/public/placeholder_class.png"}
+            alt={`${classItem.title} thumbnail`}
+          />
         ) : (
-          <div className="classes-grid">
-            {classes.map((classItem) => (
-              <div
-                key={classItem._id}
-                className="class-card"
-                onClick={() => handleCardClick(classItem._id, classItem.code)}
-                role="button"
-              >
-                <h2>{classItem.title}</h2>
-                <p>Created by: {classItem.creatorName}</p>
-                <div className="class-card-buttons">
-                <button
-                  className="leave-button"
-                  onClick={(event) => handleLeaveClass(classItem._id, event)}
-                >
-                  Leave Class
-                </button>
-                <button
-                  className="delete-button"
-                  onClick={(event) => handleDeleteClass(classItem._id, event)}
-                >
-                  Delete Class
-                </button>
-                </div>
-              </div>
-            ))}
+          <div className={styles.noVideo}>
+            <img src="./public/placeholder_class.png" alt="Placeholder" />
           </div>
         )}
-        <ToastContainer />
       </div>
+      <div className={styles.infoOptions}>
+        <div className={styles.info}>
+          <h2>{classItem.title}</h2>
+          <p>Created by: {classItem.creator.name}</p>
+        </div>
+        <div className={styles.options}>
+          <button
+            className={styles.menuButton}
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenMenuId(
+                openMenuId === classItem._id ? null : classItem._id
+              );
+            }}
+          >
+            <MoreVertical size={20} />
+          </button>
+          {openMenuId === classItem._id && (
+            <div className={styles.menuDropdown}>
+              {isCreator ? (
+                <button onClick={(e) => handleDeleteClass(classItem._id, e)}>
+                  Delete Class
+                </button>
+              ) : (
+                <button onClick={(e) => handleLeaveClass(classItem._id, e)}>
+                  Leave Class
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  const filteredClasses = filter === "yours" ? yourClasses : allClasses;
+
+  return (
+    <div className={`${styles.homeContainer} ${isDarkMode ? styles.dark : ""}`}>
+      <Header />
+      <div className={styles.spacer}></div>
+      <div className={styles.classesFilter}>
+        <h1>Classes</h1>
+        <select onChange={(e) => setFilter(e.target.value)} value={filter}>
+          <option value="all">All Classes</option>
+          <option value="yours">Your Classes</option>
+        </select>
+      </div>
+      <div className={styles.classesGrid}>
+        {loading ? (
+          <p>Loading classes...</p>
+        ) : filteredClasses.length === 0 ? (
+          <p>No classes available.</p>
+        ) : (
+          filteredClasses.map((classItem) => (
+            <ClassCard
+              key={classItem._id}
+              classItem={classItem}
+              isCreator={filter === "yours"}
+            />
+          ))
+        )}
+      </div>
+      <ToastContainer />
     </div>
   );
 }
