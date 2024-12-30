@@ -1,4 +1,4 @@
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 require("dotenv").config();
 const express = require("express");
 const app = express();
@@ -9,6 +9,7 @@ const AuthRouter = require("./Routes/AuthRouter");
 const ClassRouter = require("./Routes/ClassRouter");
 const UserRoutes = require("./Routes/User");
 const VideoRouter = require("./Routes/VideoRouter");
+const multer = require("multer");
 
 require("./Models/db");
 const PORT = process.env.PORT || 8080;
