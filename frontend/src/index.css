@@ -21,14 +21,12 @@ body{
   margin: 0;
 }
 
-body{
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-   
-  /* flex-direction: column; */
-
+body {
+  display: block; /* Use default layout to avoid overriding child grids */
+  justify-content: unset;
+  align-items: unset;
 }
+
 
 .logo {
   display: block;      
