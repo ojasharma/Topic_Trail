@@ -5,10 +5,9 @@
   height: 250px; /* Large footer height for larger screens */
   display: flex;
   align-items: center;
-  position: absolute; /* Positioned off-screen */
-  bottom: -250px; /* Push footer below viewport */
-  left: 0;
+  justify-content: center; /* Center the content */
   font-family: "Lilita One", serif !important;
+  position: relative; /* Changed from absolute to relative for better control */
 }
 
 .content {
@@ -54,12 +53,12 @@ body {
 
 footer {
   flex-shrink: 0; /* Footer stays at the bottom */
+  margin-top: auto; /* Ensure footer stays at the bottom of the page */
 }
 
 /* Media query for widths 445px or smaller */
 @media (max-width: 445px) {
   .footer {
     height: 150px; /* Adjust footer height for small screens */
-    bottom: -150px; /* Push footer below viewport accordingly */
   }
 }
