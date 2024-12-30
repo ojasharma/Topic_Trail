@@ -1,4 +1,4 @@
-const HuggingFaceService = require("./HuggingFaceService");
+// const HuggingFaceService = require("./HuggingFaceService");
 
 const TEST_TEXT = `An API (Application Programming Interface) is a set of defined rules and protocols that allow different software applications to communicate and interact with each other. APIs play a crucial role in modern software development by enabling seamless integration between disparate systems, platforms, or services. Essentially, an API acts as a bridge between two software systems, allowing them to exchange data and functionality without needing to know the underlying code or architecture of the other system. This abstraction simplifies development, promotes modularity, and enhances the scalability of applications.
 
