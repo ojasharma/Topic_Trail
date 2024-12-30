@@ -24,11 +24,12 @@ body {
 }
 
 .page{
-    width: 98.9vw;
+    width: 99.9vw;
     height: auto;
     /* border: 1px red ; */
     /* background-color: aqua; */
     display: flex;
+    
     justify-content: space-between;
 }
 
@@ -92,7 +93,7 @@ form input {
   font-size: 20px;
   padding: 10px;
   outline: none;
-  border: 2px solid black;
+  border: 1px solid rgb(165, 165, 165) !important;
   border-radius: 3px;
 }
 
@@ -116,10 +117,10 @@ button {
   align-self: flex-start; /* Align button to the left */
 }
 .sideimg{
-    
+    /* margin-left: 300px; */
     width: auto;
     height: 101vh;
-    transform: translateX(0px);
+    /* transform: translateX(150px); */
 }
 @media(max-width: 1031px){
     .page{
