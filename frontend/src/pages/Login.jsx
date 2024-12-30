@@ -66,7 +66,7 @@ function Login() {
             <h1>Login</h1>
             <form onSubmit={handleLogin}>
               <div>
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">Email address</label>
                 <input
                   onChange={handleChange}
                   type="email"
@@ -96,8 +96,8 @@ function Login() {
         <div className={styles.imgside}>
           <img src="/bg.jpg" alt="bg" className={styles.sideimg} />
         </div>
-        <ToastContainer />
       </div>
+      <ToastContainer />
     </>
   );
 }
