@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./Modal.css";
+import { ThemeContext } from "./ThemeContext"; // Import the theme context
+
 const token = localStorage.getItem("token");
 
 const Modal = ({ isOpen, onClose, type }) => {
+  const { isDarkMode } = useContext(ThemeContext); // Access the dark mode state from context
+
   if (!isOpen) return null;
 
-  const [title, setTitle] = useState("");  // For "Create Class" input
+  const [title, setTitle] = useState(""); // For "Create Class" input
   const [classCode, setClassCode] = useState(""); // For "Join Class" input
   const [error, setError] = useState(""); // To handle any errors
 
@@ -13,7 +17,7 @@ const Modal = ({ isOpen, onClose, type }) => {
     e.preventDefault();
 
     const createurl = "http://localhost:8080/classes/create";
-    const joinUrl = "http://localhost:8080/classes/join"; 
+    const joinUrl = "http://localhost:8080/classes/join";
 
     const data = type === "create" ? { title } : { classCode }; // Send title for create, classCode for join
 
@@ -22,7 +26,7 @@ const Modal = ({ isOpen, onClose, type }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
       });
@@ -34,14 +38,21 @@ const Modal = ({ isOpen, onClose, type }) => {
       const result = await response.json();
       console.log(result); // Handle success result if needed
       onClose(); // Close the modal after submission
+      window.location.reload(); // Refresh the page after successful submission
     } catch (error) {
       setError(error.message); // Show error message if request fails
     }
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div
+      className={`modal-overlay ${isDarkMode ? "dark-overlay" : ""}`}
+      onClick={onClose}
+    >
+      <div
+        className={`modal-content ${isDarkMode ? "dark-content" : ""}`}
+        onClick={(e) => e.stopPropagation()}
+      >
         <h2>{type === "create" ? "Create Class" : "Join Class"}</h2>
         <form onSubmit={handleSubmit}>
           {type === "create" ? (
@@ -69,10 +80,15 @@ const Modal = ({ isOpen, onClose, type }) => {
               />
             </>
           )}
-          {error && <p className="error-message">{error}</p>} {/* Display error message */}
-          <button type="submit">{type === "create" ? "Create Class" : "Join Class"}</button>
+          {error && <p className="error-message">{error}</p>}{" "}
+          {/* Display error message */}
+          <button type="submit" className="submitButton">
+            {type === "create" ? "Create Class" : "Join Class"}
+          </button>
         </form>
-        <button onClick={onClose}>Close</button>
+        <button className="closeButton" onClick={onClose}>
+          Close
+        </button>
       </div>
     </div>
   );
