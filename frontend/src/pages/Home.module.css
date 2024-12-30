@@ -1,0 +1,332 @@
+/* General Styles */
+.homeContainer {
+  font-family: 'Roboto', sans-serif;
+  padding: 20px;
+  padding-top: 70px;
+}
+
+.spacer {
+  margin: 20px 0;
+}
+
+/* Classes Filter Section */
+.classesFilter {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content:space-between;
+  padding-bottom: 20px;
+  padding-right: 11px;
+  height: 80px;
+  
+}
+/* Dropdown Container */
+.classesFilter select {
+  font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+  font-size: 16px;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  background: white;
+  color: #333;
+  margin-top: 18px;
+  appearance: none; /* Remove default browser styles */
+  -webkit-appearance: none; /* For Safari/Chrome */
+  -moz-appearance: none; /* For Firefox */
+}
+
+/* Highlight color when focused */
+.classesFilter select:focus {
+  outline: none;
+  border-color: #6a0dad; /* Purple border */
+  /* box-shadow: 0 0 4px #6a0dad; Purple glow */
+  outline: 0 !important; 
+}
+
+/* Dropdown Option Styling */
+.classesFilter select option {
+  font-family: 'Roboto', sans-serif; /* Ensure font is Roboto */
+  font-size: 16px;
+  color: #333; /* Default text color */
+  background-color: white; /* Default background color */
+}
+
+/* Option Hover and Active State */
+.classesFilter select option:checked, /* Selected option */
+.classesFilter select option:hover {
+  background-color: #932eff !important; /* Light purple background */
+  color: #fff !important; /* White text */
+  border: none; /* Remove any border applied by the browser */
+  outline: 0 !important; /* Remove any focus outline */
+}
+
+/* Suppress default blue hover in Webkit (Chrome, Safari) */
+.classesFilter select:focus-visible {
+  border-color: #6a0dad; /* Purple border on focus */
+  background-color: white;
+}
+
+/* For Firefox-specific fixes */
+select:-moz-focusring {
+  color: #333;
+  background-color: white;
+}
+
+
+h1{
+    font-family: PT Serif, sans-serif;
+    margin-left: 2px;
+    font-size: 3em;
+    
+}
+
+.classesFilter select {
+  font-size: 16px;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  /* margin-right: 30px; */
+}
+
+/* Classes Grid */
+.classesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); /* Cards resize with a min of 290px */
+  gap: 10px; /* Keeps the gap constant */
+  width: 100%;
+  justify-items: center;
+  align-items: start;
+  margin: 0 auto;
+}
+
+/* Class Card */
+.classCard {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  /* border-radius: 10px; */
+  overflow: visible;
+  cursor: pointer;
+  /* transition: transform 0.2s, box-shadow 0.2s; */
+  /* width: 100%; */
+  width: 94%; /* Ensures cards take up full width of their container */
+  position: relative;
+  /* border: 1px solid #ddd; */
+  box-sizing: border-box; /*Ensures padding doesn't affect overall size*/
+}
+
+.classCard:hover {
+  /* transform: translateY(-5px); */
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+}
+
+
+/* Thumbnail Section */
+.classThumbnail {
+  width: 100%;
+  /* min-height: 150px; */
+  height: auto;
+  /* background: #f0f0f0; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  box-shadow: -5px -5px 0px #c8c8c8, -10px -10px 0px #969696;
+  position: relative; /* Required for positioning the ::after pseudo-element */
+  overflow: hidden; /* Ensures ::after doesn't spill outside */
+  /* transition: 0.4s; */
+}
+
+.classThumbnail:hover {
+  filter: grayscale(100%) sepia(100%) hue-rotate(240deg) brightness(50%) saturate(3);
+}
+
+.classThumbnail::after {
+  content: "Enter class"; /* Text to display on hover */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent overlay */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0; /* Initially hidden */
+  pointer-events: none; /* Prevent blocking hover interactions */
+}
+
+.classThumbnail:hover::after {
+  opacity: 1; /* Reveal text on hover */
+}
+
+
+
+.classThumbnail img {
+  border-radius: 6px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.noVideo {
+  font-size: 14px;
+  color: #888;
+  text-align: center;
+}
+
+/* Info-Options Section */
+.infoOptions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+}
+
+/* Info Section */
+.info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.info h2 {
+  font-size: 16px;
+  font-family: "Roboto";
+  /* font-weight: bold; */
+  margin: 0 0 5px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.info p {
+    font-family: "Roboto";
+  font-size: 12px;
+  color: #555;
+  margin: 0;
+}
+
+/* Options Section */
+.options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.menuButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  color: #333;
+}
+
+/* Options Section */
+.menuDropdown {
+  position: absolute;
+  right: -10px;
+  top: 40px;
+  background: #b82c2c;
+  /* border: 1px solid #ddd; */
+  border-radius: 5px;
+  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+  z-index: 10000; /* Ensure it is on top */
+  color: #ffffff;
+  width: max-content; /* This ensures dropdown width is based on content */
+}
+
+
+.menuDropdown button {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 8px;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: #ffffff;
+}
+
+
+
+/* General Dark Theme Styles */
+[data-theme="dark"] .homeContainer {
+    transition: 0.3s;
+  background-color: #000000;
+}
+
+/* Dark Theme for Class Cards */
+[data-theme="dark"] .classCard {
+        transition: 0.3s;
+  background: #000000;
+  color: white;
+  /* border: 1px solid #333; Optional: Add a border for better separation */
+}
+[data-theme="dark"] h1{
+    color: white;
+}
+[data-theme="dark"] .classThumbnail{
+     box-shadow: -5px -5px 0px #373737, -10px -10px 0px #696969;
+}
+
+
+[data-theme="dark"] .noVideo img{
+    filter:invert();
+}
+
+[data-theme="dark"] .info h2 {
+  color: white;
+}
+
+[data-theme="dark"] .info p {
+  color: #ccc;
+}
+/* 
+[data-theme="dark"] .menuDropdown {
+  background: #333;
+  border: 1px solid #444;
+}
+
+[data-theme="dark"] .menuDropdown button {
+  color: white;
+} */
+
+[data-theme="dark"] .menuDropdown button:hover {
+  background: #444;
+}
+[data-theme="dark"] .classesFilter select{
+    background-color: #000;
+    color: white;
+}
+
+/* 
+[data-theme="dark"] body{
+    transition: 0.3s;
+    background-color: #1a1a1a;    
+}
+[data-theme="dark"] h1{
+    transition: 0.3s;
+    color: white;
+} */
+
+@media(max-width: 390px){
+    h1{
+        padding-top: 13px;
+        font-size: 2em;
+    }
+    .classesFilter select{
+        height: 30px;
+        font-size: 0.7em;
+    }
+}
+
