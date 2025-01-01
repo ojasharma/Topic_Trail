@@ -32,7 +32,7 @@ const Footer = () => {
               className={styles.githubIcon}
             />
           </a>
-          Frontend by Namita
+          Frontend & UI/UX by Namita
         </p>
       </div>
     </footer>

@@ -1,9 +1,13 @@
 // ClassHeader.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { FaRegCopy, FaUpload } from "react-icons/fa";
+import { Sun, Moon } from "lucide-react"; // Using lucide icons for theme toggle
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./ClassHeader.css";
 
-const ClassHeader = ({ classCode, classId, onSearch }) => {
+const ClassHeader = ({ classCode, classId, onSearch, isCreator }) => {
   const [copied, setCopied] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -11,6 +15,24 @@ const ClassHeader = ({ classCode, classId, onSearch }) => {
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  // const { id: classId } = useParams();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      // Initialize theme based on saved preference or default to light mode
+      const savedTheme = localStorage.getItem("theme") || "light";
+      setIsDarkMode(savedTheme === "dark");
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    }, []);
+
+  const toggleTheme = () => {
+    const newTheme = isDarkMode ? "light" : "dark";
+    setIsDarkMode(!isDarkMode);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+  };
 
   const handleCopyClick = () => {
     navigator.clipboard
@@ -24,6 +46,10 @@ const ClassHeader = ({ classCode, classId, onSearch }) => {
         toast.error("Failed to copy class code.");
       });
   };
+
+  const handleRefreshClass = () => {
+    window.location.reload();
+  }
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -65,6 +91,10 @@ const ClassHeader = ({ classCode, classId, onSearch }) => {
       const result = await response.json();
       toast.success(result.message || "Video uploaded successfully!");
 
+      setTimeout(function(){
+        window.location.reload();
+      }, 3000);
+
       setVideoFile(null);
       setVideoTitle("");
       setVideoDescription("");
@@ -79,7 +109,12 @@ const ClassHeader = ({ classCode, classId, onSearch }) => {
   return (
     <div className="class-header">
       <div className="logo-container">
-        <img src="/logo.png" alt="Logo" className="logo" />
+        <img 
+        src={isDarkMode ? "/logo_dark.png" : "/logo.png"}
+        alt="Logo" 
+        className="logo" 
+        onClick={handleRefreshClass}
+        />
       </div>
 
       <div className="search-container">
@@ -92,21 +127,35 @@ const ClassHeader = ({ classCode, classId, onSearch }) => {
         />
       </div>
 
-      <div className="class-code-container">
-        <h2>Class Code: {classCode}</h2>
-        <button className="copy-button" onClick={handleCopyClick}>
-          {copied ? "Copied!" : "Copy Code"}
-        </button>
-      </div>
-
-      <div className="upload-button-container">
+      <div className="class-controls">
         <button
-          className="upload-button"
-          onClick={() => setShowUploadModal(true)}
-          disabled={isUploading}
+          className="theme-toggle"
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
         >
-          {isUploading ? "Uploading..." : "Upload Video"}
+          {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
         </button>
+
+        <div className="class-code-container">
+          <div className="copy-icon">
+            <FaRegCopy onClick={handleCopyClick} />
+          </div>
+
+          {/* <button className="copy-button" onClick={handleCopyClick}>
+            {copied ? "Copied!" : "Copy Code"}
+          </button> */}
+        </div>
+
+        {isCreator && <div className="upload-button-container">
+          <div className="upload-icon">
+            <FaUpload
+              onClick={() => setShowUploadModal(true)}
+              disabled={isUploading}
+            />
+            {/* <div>Uploading</div> */}
+          </div>
+        </div>}
+
       </div>
 
       {showUploadModal && (
@@ -137,7 +186,7 @@ const ClassHeader = ({ classCode, classId, onSearch }) => {
                 {isUploading ? "Uploading..." : "Upload"}
               </button>
               <button
-                className="cancel-button"
+                // className="cancel-button"
                 onClick={() => setShowUploadModal(false)}
                 disabled={isUploading}
               >

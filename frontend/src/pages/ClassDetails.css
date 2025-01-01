@@ -1,6 +1,6 @@
 .class-details-content{
-  margin-top:150px;
-  max-height: calc(100vh - 25px); 
+  margin-top:100px;
+  padding: 0px 30px;
 }
 
 
@@ -8,37 +8,39 @@
 .videos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  gap: 30px;
   margin-top: 30px;
-  max-width: 1200px;
-  min-height: 100px;
   margin-bottom: 30px;
 }
 
 .video-card {
   display: flex;
   flex-direction: column; /* Stack items vertically */
-  justify-content: center; /* Center the content (title and button) vertically */
   align-items: center; /* Center the content horizontally */
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  /* border: 1px solid #ddd; */
+  border-radius: 6px;
   background-color: #fff;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: -5px -5px 0px #c8c8c8, -10px -10px 0px #969696;
   cursor: pointer;
   transition: transform 0.3s ease;
-  text-align: center;
-  padding: 10px;
-  height: 250px; /* Adjust the height as needed */
+  /* text-align: center; */
+  padding: 0px;
+  height: 185px; /* Adjust the height as needed */
   position: relative; /* Required for absolute positioning of the button */
 }
 
-.video-card:hover {
+/* .video-card:hover {
   transform: scale(1.05);
+  background-color: #dcd3e1;
+} */
+
+.video-card img {
+  width: 100%;
 }
 
 .video-title {
-  font-size: 1.2rem;
+  font-size: 16px;
   font-weight: bold;
   color: #333;
   margin-bottom: 10px; /* Space below the title */
@@ -124,6 +126,11 @@
   color: #666;
 }
 
+.classVideoContent {
+  display: flex;
+  margin-top: 8px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .modal-content {
@@ -152,5 +159,43 @@
 }
 
 .video-topics {
+  max-width: 175px;
   margin-top: 8px;
+  font-size: 12px;
+}
+
+.video-topics select {
+  width: 100%;
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+[data-theme="dark"] .video-card {
+  background: #555;
+}
+
+[data-theme="dark"] .video-title, [data-theme="dark"] .video-topics, [data-theme="dark"] .video-topics select{
+  color: #fff;
+}
+
+[data-theme="dark"] .video-topics select {
+  background-color: rgba(85, 85, 85, 10);
+}
+.class-details-back svg {
+  cursor: pointer;
+}
+
+.video-content-left {
+  width: 310px;
+  width: 310px;
+}
+
+.video-card:hover {
+  filter: grayscale(100%) sepia(100%) hue-rotate(240deg) brightness(50%) saturate(3);
+}
+
+@media screen and (max-width: 767px){
+  .class-details-content {
+    margin-top: 200px;
+  }
 }
