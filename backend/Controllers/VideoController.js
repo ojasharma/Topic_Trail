@@ -1,7 +1,7 @@
 const VideoModel = require("../Models/Video");
 const ClassModel = require("../Models/Class");
 const CloudinaryService = require("../services/CloudinaryService");
-const { processVideo } = require("../Utils/videoProcessing");
+const { processVideo } = require("../Utils/VideoProcessing");
 
 const cloudinaryService = new CloudinaryService();
 
