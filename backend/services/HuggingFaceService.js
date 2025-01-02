@@ -4,10 +4,10 @@ const axios = require("axios");
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; // Disable SSL verification
 
-const HUGGINGFACE_API_KEY = "";
+// const HUGGINGFACE_API_KEY = "";
 
 // Create a client for Hugging Face Inference
-const client = new HfInference(HUGGINGFACE_API_KEY);
+const client = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
 async function generateStructuredSummary(text) {
   if (!text) {
@@ -59,21 +59,14 @@ async function generateMCQs(text) {
           4. Include an explanation for why the correct answer is right
           
           Return the response in this exact JSON format (don't make any mistake in the brackets , KEEP IT JSON VALID PLEASE ,  BEG YOU):
-          //START OF FORMAT//
-         {
-  "mcqs": [
-    {
-      "question": "Clear, specific question text",
+          //START OF FORMAT MAKE SURE IT IS JASON VALID//
+         {"mcqs": [
+    {"question": "Clear, specific question text",
       "options": ["option1", "option2", "option3", "option4"],
       "correctAnswerIndex": 0,
-      "explanation": "Brief explanation of why the correct answer is right"
-    },
-    {
-      same for next question
-    }
-  ]
-}
-   //END OF FORMAT//       
+      "explanation": "Brief explanation of why the correct answer is right"},
+    {same for next question}]}
+   //END OF FORMAT MAKE SURE IT IS JASON VALID , NO MISTAKES OF BRACKETS SHOULD BE TOLERATED//       
           Make sure:
           - Questions are well-distributed across different topics
           - Each question tests a single clear CONCEPT ,not something which happened in the lecture but something relevant to the topic .
