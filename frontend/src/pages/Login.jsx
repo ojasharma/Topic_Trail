@@ -72,7 +72,14 @@ function Login() {
             <h1>Login</h1>
             <form onSubmit={handleLogin}>
               <div>
-                <label htmlFor="email">Email address</label>
+                <label
+                  htmlFor="email"
+                  className={`${
+                    isDarkMode ? "text-white" : "text-black"
+                  } transition-colors duration-300`}
+                >
+                  Email address
+                </label>
                 <input
                   onChange={handleChange}
                   type="email"
@@ -83,7 +90,14 @@ function Login() {
                 />
               </div>
               <div>
-                <label htmlFor="password">Password</label>
+                <label
+                  htmlFor="password"
+                  className={`${
+                    isDarkMode ? "text-white" : "text-black"
+                  } transition-colors duration-300`}
+                >
+                  Password
+                </label>
                 <input
                   onChange={handleChange}
                   type="password"
@@ -93,7 +107,11 @@ function Login() {
                 />
               </div>
               <button type="submit">Login</button>
-              <span>
+              <span
+                className={`${
+                  isDarkMode ? "text-white" : "text-black"
+                } transition-colors duration-300`}
+              >
                 Don't have an account? <Link to="/signup">Signup</Link>
               </span>
             </form>

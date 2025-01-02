@@ -24,6 +24,7 @@ const VideoDetails = () => {
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
   const token = localStorage.getItem("token");
+  
 
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -57,14 +58,11 @@ const VideoDetails = () => {
 
   const fetchNotes = async () => {
     try {
-      const response = await fetch(
-        `${baseUrl}videos/${videoId}/notes`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${baseUrl}videos/${videoId}/notes`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.ok) {
         const result = await response.json();
         setNotes(result);
@@ -76,17 +74,14 @@ const VideoDetails = () => {
 
   const handleAddNote = async () => {
     try {
-      const response = await fetch(
-        `${baseUrl}videos/${videoId}/notes`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(newNote),
-        }
-      );
+      const response = await fetch(`${baseUrl}videos/${videoId}/notes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(newNote),
+      });
 
       if (response.ok) {
         const result = await response.json();
@@ -99,6 +94,13 @@ const VideoDetails = () => {
     }
   };
 
+  const handleRetryQuiz = () => {
+    setUserAnswers({});
+    setQuizSubmitted(false);
+    setQuizScore(0);
+    window.scrollTo(0, 0); // Scroll to the top
+  };
+
   const handleSubmitQuiz = () => {
     let score = 0;
     selectedVideo.mcqs.forEach((question) => {
@@ -108,11 +110,46 @@ const VideoDetails = () => {
     });
     setQuizScore(score);
     setQuizSubmitted(true);
+
+    // Scroll to the top of the quiz section
+    window.scrollTo({
+      top: document.querySelector(".quiz-section").offsetTop,
+      behavior: "smooth",
+    });
   };
+
 
   const handleAnswerChange = (questionId, index) => {
     setUserAnswers({ ...userAnswers, [questionId]: index });
   };
+
+  const getQuizOptionClass = (questionId, index, isSelected) => {
+    const baseClasses = "mb-2 p-3 rounded-lg cursor-pointer transition-colors";
+
+    if (quizSubmitted) {
+      const isCorrect =
+        index ===
+        selectedVideo.mcqs.find((q) => q._id === questionId).correctAnswerIndex;
+      if (isSelected && isCorrect) {
+        return `${baseClasses} bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100`;
+      }
+      if (isSelected && !isCorrect) {
+        return `${baseClasses} bg-red-100 dark:bg-red-900/30 text-red-900 dark:text-red-100`;
+      }
+      if (!isSelected && isCorrect) {
+        return `${baseClasses} bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100`;
+      }
+      return `${baseClasses} bg-gray-50 dark:bg-zinc-800`;
+    }
+
+    return `${baseClasses} ${
+      isSelected
+        ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-900 dark:text-indigo-100"
+        : "bg-gray-50 dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700"
+    }`;
+  };
+
+  
 
   if (loading) return <p>Loading video details...</p>;
   if (!selectedVideo) return <p>Video not found.</p>;
@@ -144,7 +181,7 @@ const VideoDetails = () => {
         </div>
 
         <div className="flex-1 min-w-[40%] bg-gray-50 dark:bg-zinc-900 p-6 rounded-lg shadow-lg">
-          <div className="flex gap-4 mb-6">
+          <div className="grid grid-cols-3 gap-2 mb-6">
             {["Summary", "Quiz", "Notes"].map((item) => (
               <button
                 key={item}
@@ -153,18 +190,20 @@ const VideoDetails = () => {
                   setShowQuiz(item === "Quiz" ? !showQuiz : false);
                   setShowNotes(item === "Notes" ? !showNotes : false);
                 }}
-                className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white py-2 px-4 rounded-lg transition-colors"
+                className="w-full flex items-center justify-center gap-1 bg-indigo-600 hover:bg-indigo-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white py-2 px-2 rounded-lg transition-colors text-sm sm:text-base"
               >
-                {item === "Summary" && <FaBookOpen />}
-                {item === "Quiz" && <FaQuestionCircle />}
-                {item === "Notes" && <FaStickyNote />}
-                <span>{item}</span>
+                {item === "Summary" && <FaBookOpen className="flex-shrink-0" />}
+                {item === "Quiz" && (
+                  <FaQuestionCircle className="flex-shrink-0" />
+                )}
+                {item === "Notes" && <FaStickyNote className="flex-shrink-0" />}
+                <span className="hidden md:inline">{item}</span>
                 {(item === "Summary" && showSummary) ||
                 (item === "Quiz" && showQuiz) ||
                 (item === "Notes" && showNotes) ? (
-                  <FaChevronUp />
+                  <FaChevronUp className="flex-shrink-0" />
                 ) : (
-                  <FaChevronDown />
+                  <FaChevronDown className="flex-shrink-0" />
                 )}
               </button>
             ))}
@@ -194,85 +233,48 @@ const VideoDetails = () => {
             )}
 
             {showQuiz && (
-              <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-lg h-96 overflow-y-auto">
+              <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-lg h-96 overflow-y-auto quiz-section">
                 <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
                   Quiz
                 </h3>
                 {quizSubmitted && (
-                  <div className="mb-4 p-4 bg-gray-50 dark:bg-zinc-800 rounded-lg">
-                    <h4 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
-                      Your Score: {quizScore} / {selectedVideo.mcqs.length}
-                    </h4>
-                  </div>
+                  <>
+                    <div className="mb-4 p-4 bg-gray-50 dark:bg-zinc-800 rounded-lg">
+                      <h4 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+                        Your Score: {quizScore} / {selectedVideo.mcqs.length}
+                      </h4>
+                    </div>
+                    <button
+                      onClick={handleRetryQuiz}
+                      className="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white py-2 px-4 rounded-lg transition-colors mb-4"
+                    >
+                      Retry Quiz
+                    </button>
+                  </>
                 )}
                 {selectedVideo.mcqs.map((question) => (
                   <div key={question._id} className="mb-6">
-                    {quizSubmitted && (
-                      <div
-                        className={`mb-2 font-semibold ${
-                          userAnswers[question._id] ===
-                          question.correctAnswerIndex
-                            ? "text-green-600 dark:text-green-400"
-                            : "text-red-600 dark:text-red-400"
-                        }`}
-                      >
-                        {userAnswers[question._id] ===
-                        question.correctAnswerIndex
-                          ? "Correct!"
-                          : "Incorrect"}
-                      </div>
-                    )}
                     <p className="font-medium mb-3 text-gray-900 dark:text-white">
                       {question.question}
                     </p>
-                    {question.options.map((option, index) => {
-                      const isSelected = userAnswers[question._id] === index;
-                      const isCorrect = index === question.correctAnswerIndex;
-                      const showCorrect = quizSubmitted && isCorrect;
-                      const showIncorrect =
-                        quizSubmitted && isSelected && !isCorrect;
-
-                      return (
-                        <div
-                          key={index}
-                          onClick={() =>
-                            !quizSubmitted &&
-                            handleAnswerChange(question._id, index)
-                          }
-                          className={`mb-2 p-3 rounded-lg cursor-pointer transition-colors
-                            ${
-                              !quizSubmitted
-                                ? "hover:bg-gray-100 dark:hover:bg-zinc-800"
-                                : ""
-                            }
-                            ${
-                              showCorrect
-                                ? "bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100"
-                                : ""
-                            }
-                            ${
-                              showIncorrect
-                                ? "bg-red-100 dark:bg-red-900/30 text-red-900 dark:text-red-100"
-                                : ""
-                            }
-                            ${
-                              isSelected && !quizSubmitted
-                                ? "bg-indigo-100 dark:bg-zinc-800"
-                                : ""
-                            }
-                            ${
-                              !isSelected && !showCorrect && !showIncorrect
-                                ? "bg-gray-50 dark:bg-zinc-800"
-                                : ""
-                            }
-                          `}
-                        >
-                          <span className="text-gray-700 dark:text-gray-300">
-                            {option}
-                          </span>
-                        </div>
-                      );
-                    })}
+                    {question.options.map((option, index) => (
+                      <div
+                        key={index}
+                        onClick={() =>
+                          !quizSubmitted &&
+                          handleAnswerChange(question._id, index)
+                        }
+                        className={getQuizOptionClass(
+                          question._id,
+                          index,
+                          userAnswers[question._id] === index
+                        )}
+                      >
+                        <span className="text-gray-700 dark:text-gray-300">
+                          {option}
+                        </span>
+                      </div>
+                    ))}
                     {quizSubmitted && (
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 p-3 bg-gray-50 dark:bg-zinc-800 rounded">
                         {question.explanation}

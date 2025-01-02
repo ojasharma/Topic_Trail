@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { handleError, handleSuccess } from "../utils";
 import { useNavigate } from "react-router-dom";
+import { ThemeContext } from "../components/ThemeContext"; // Theme Context
 import styles from "./signup.module.css";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -15,10 +16,10 @@ function Signup() {
   });
 
   const navigate = useNavigate();
+  const { isDarkMode } = useContext(ThemeContext); // Access theme context
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
     const copySignupInfo = { ...signupInfo };
     copySignupInfo[name] = value;
     setSignupInfo(copySignupInfo);
@@ -31,7 +32,7 @@ function Signup() {
       return handleError("All fields are mandatory.");
     }
     try {
-      const url = `${baseUrl}auth/signup`; //backend url
+      const url = `${baseUrl}auth/signup`; // Backend URL
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -52,7 +53,6 @@ function Signup() {
       } else if (!success) {
         handleError(message);
       }
-      console.log(result);
     } catch (err) {
       handleError(err);
     }
@@ -60,14 +60,31 @@ function Signup() {
 
   return (
     <>
-      <img src="/logo.png" alt="Topic Trail Logo" className={styles.logo} />
+      <img
+        src={isDarkMode ? "/logo_dark.png" : "/logo.png"} // Dynamic logo
+        alt="Topic Trail Logo"
+        className={styles.logo}
+      />
       <div className={styles.page}>
         <div className={styles.formside}>
           <div className={styles.container}>
-            <h1>Signup</h1>
+            <h1
+              className={`${
+                isDarkMode ? "text-white" : "text-black"
+              } transition-colors duration-300`}
+            >
+              Signup
+            </h1>
             <form onSubmit={handleSignup}>
               <div>
-                <label htmlFor="name">Name</label>
+                <label
+                  htmlFor="name"
+                  className={`${
+                    isDarkMode ? "text-white" : "text-black"
+                  } transition-colors duration-300`}
+                >
+                  Name
+                </label>
                 <input
                   onChange={handleChange}
                   type="text"
@@ -78,31 +95,46 @@ function Signup() {
                 />
               </div>
               <div>
-                <label htmlFor="email">Email</label>
+                <label
+                  htmlFor="email"
+                  className={`${
+                    isDarkMode ? "text-white" : "text-black"
+                  } transition-colors duration-300`}
+                >
+                  Email
+                </label>
                 <input
                   onChange={handleChange}
                   type="email"
                   name="email"
-                  autoFocus
                   placeholder="Enter your Email"
                   value={signupInfo.email}
                 />
               </div>
               <div>
-                <label htmlFor="password">Password</label>
+                <label
+                  htmlFor="password"
+                  className={`${
+                    isDarkMode ? "text-white" : "text-black"
+                  } transition-colors duration-300`}
+                >
+                  Password
+                </label>
                 <input
                   onChange={handleChange}
                   type="password"
                   name="password"
-                  autoFocus
                   placeholder="Enter a Password"
                   value={signupInfo.password}
                 />
               </div>
               <button type="submit">Signup</button>
-              <span>
-                Already have an account?
-                <Link to="/login">Login</Link>
+              <span
+                className={`${
+                  isDarkMode ? "text-white" : "text-black"
+                } transition-colors duration-300`}
+              >
+                Already have an account? <Link to="/login">Login</Link>
               </span>
             </form>
           </div>
