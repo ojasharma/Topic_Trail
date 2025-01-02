@@ -25,6 +25,8 @@ const VideoDetails = () => {
   const [quizScore, setQuizScore] = useState(0);
   const token = localStorage.getItem("token");
 
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+
   useEffect(() => {
     fetchVideoDetails();
     fetchNotes();
@@ -38,7 +40,7 @@ const VideoDetails = () => {
     }
 
     try {
-      const response = await fetch(`${window.location.protocol}//${window.location.hostname}:8080/videos/${videoId}`, {
+      const response = await fetch(`${baseUrl}videos/${videoId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -56,7 +58,7 @@ const VideoDetails = () => {
   const fetchNotes = async () => {
     try {
       const response = await fetch(
-        `${window.location.protocol}//${window.location.hostname}:8080/videos/${videoId}/notes`,
+        `${baseUrl}videos/${videoId}/notes`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -75,7 +77,7 @@ const VideoDetails = () => {
   const handleAddNote = async () => {
     try {
       const response = await fetch(
-        `${window.location.protocol}//${window.location.hostname}:8080/videos/${videoId}/notes`,
+        `${baseUrl}videos/${videoId}/notes`,
         {
           method: "POST",
           headers: {

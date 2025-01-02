@@ -79,4 +79,7 @@
     cd frontend
     npm run dev
     ```
-3. Access the application in your browser.
+
+3. Add necessary env files.
+
+4. Access the application in your browser.

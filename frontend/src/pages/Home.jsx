@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { MoreVertical } from "lucide-react";
 import { ThemeContext } from "../components/ThemeContext"; // Importing ThemeContext
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 function Home() {
   const [allClasses, setAllClasses] = useState([]);
   const [yourClasses, setYourClasses] = useState([]);
@@ -27,7 +29,7 @@ function Home() {
       }
 
       try {
-        const response = await fetch(`${window.location.protocol}//${window.location.hostname}:8080/classes`, {
+        const response = await fetch(`${baseUrl}classes`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -46,7 +48,7 @@ function Home() {
           result.classes.map(async (classItem) => {
             try {
               const videosResponse = await fetch(
-                `${window.location.protocol}//${window.location.hostname}:8080/videos/class/${classItem._id}`,
+                `${baseUrl}videos/class/${classItem._id}`,
                 {
                   method: "GET",
                   headers: {
@@ -102,7 +104,7 @@ function Home() {
     setOpenMenuId(null);
 
     try {
-      const response = await fetch(`${window.location.protocol}//${window.location.hostname}:8080/classes/${classId}`, {
+      const response = await fetch(`${baseUrl}classes/${classId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -127,7 +129,7 @@ function Home() {
 
     try {
       const response = await fetch(
-        `${window.location.protocol}//${window.location.hostname}:8080/classes/${classId}/leave`,
+        `${baseUrl}classes/${classId}/leave`,
         {
           method: "DELETE",
           headers: {

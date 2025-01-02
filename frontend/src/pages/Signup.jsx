@@ -5,6 +5,8 @@ import { handleError, handleSuccess } from "../utils";
 import { useNavigate } from "react-router-dom";
 import styles from "./signup.module.css";
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 function Signup() {
   const [signupInfo, setSignupInfo] = useState({
     name: "",
@@ -29,7 +31,7 @@ function Signup() {
       return handleError("All fields are mandatory.");
     }
     try {
-      const url = `${window.location.protocol}//${window.location.hostname}:8080/auth/signup`; //backend url
+      const url = `${baseUrl}auth/signup`; //backend url
       const response = await fetch(url, {
         method: "POST",
         headers: {
