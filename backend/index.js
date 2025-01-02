@@ -13,7 +13,7 @@ const multer = require("multer");
 
 require("./Models/db");
 const PORT = process.env.PORT || 8080;
-console.log("NODE_EXTRA_CA_CERTS:", process.env.NODE_EXTRA_CA_CERTS);
+// console.log("NODE_EXTRA_CA_CERTS:", process.env.NODE_EXTRA_CA_CERTS);
 // Increase payload limit for video uploads
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
