@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaArrowLeft } from "react-icons/fa"; // Back button icon
 import { Sun, Moon } from "lucide-react"; // Theme toggle icons
-import styles from "./headerVideo.module.css";
+import styles from "./HeaderVideo.module.css";
 
 const Header = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
