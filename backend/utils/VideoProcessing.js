@@ -1,7 +1,7 @@
 const VideoModel = require("../Models/Video");
-const AudioConverter = require("../Services/AudioConverter");
-const WhisperService = require("../Services/WhisperService");
-const HuggingFaceService = require("../Services/HuggingFaceService");
+const AudioConverter = require("../services/AudioConverter");
+const WhisperService = require("../services/WhisperService");
+const HuggingFaceService = require("../services/HuggingFaceService");
 
 async function updateVideoStatus(videoId, status, error = null) {
   const updates = { processingStatus: status };
