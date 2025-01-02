@@ -161,7 +161,7 @@ function Home() {
       <div className={styles.classThumbnail}>
         {classItem.thumbnailUrl ? (
           <img
-            src={classItem.thumbnailUrl || "/public/placeholder_class.png"}
+            src={classItem.thumbnailUrl || "/placeholder_class.png"}
             alt={`${classItem.title} thumbnail`}
           />
         ) : (
