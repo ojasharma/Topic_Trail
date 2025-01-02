@@ -166,7 +166,7 @@ function Home() {
           />
         ) : (
           <div className={styles.noVideo}>
-            <img src="./public/placeholder_class.png" alt="Placeholder" />
+            <img src="/placeholder_class.png" alt="Placeholder" />
           </div>
         )}
       </div>
