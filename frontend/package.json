@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^1.7.9",
     "debounce": "^2.2.0",
+    "dotenv-webpack": "^8.1.0",
     "loadash": "^1.0.0",
     "loadsh": "^0.0.4",
     "lodash": "^4.17.21",

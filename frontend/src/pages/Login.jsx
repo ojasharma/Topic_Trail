@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { ThemeContext } from "../components/ThemeContext";
 import styles from "./login.module.css";
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 function Login() {
   const [loginInfo, setLoginInfo] = useState({
     email: "",
@@ -29,7 +31,7 @@ function Login() {
       return handleError("All fields are mandatory.");
     }
     try {
-      const url = `${window.location.protocol}//${window.location.hostname}:8080/auth/login`; //backend url
+      const url = `${baseUrl}auth/login`; //backend url
       const response = await fetch(url, {
         method: "POST",
         headers: {

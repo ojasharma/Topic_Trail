@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "./ClassHeader.css";
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 const ClassHeader = ({ classCode, classId, onSearch, isCreator }) => {
   const [copied, setCopied] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -72,7 +74,7 @@ const ClassHeader = ({ classCode, classId, onSearch, isCreator }) => {
     formData.append("classId", classId);
 
     try {
-      const response = await fetch(`${window.location.protocol}//${window.location.hostname}:8080/videos/upload`, {
+      const response = await fetch(`${baseUrl}videos/upload`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

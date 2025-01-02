@@ -12,6 +12,8 @@ import "react-toastify/dist/ReactToastify.css";
 import "./ClassDetails.css";
 import { result } from "lodash";
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 const ClassDetails = () => {
   const { id: classId } = useParams();
   const [classCode, setClassCode] = useState("");
@@ -35,7 +37,7 @@ const ClassDetails = () => {
 
     const fetchClasses = async () => {
 
-      const response = await fetch(`${window.location.protocol}//${window.location.hostname}:8080/classes`, {
+      const response = await fetch(`${baseUrl}classes`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -88,7 +90,7 @@ const ClassDetails = () => {
 
     try {
       const response = await fetch(
-        `${window.location.protocol}//${window.location.hostname}:8080/videos/class/${classId}`,
+        `${baseUrl}videos/class/${classId}`,
         {
           method: "GET",
           headers: {
@@ -124,7 +126,7 @@ const ClassDetails = () => {
 
     try {
       const response = await fetch(
-        `${window.location.protocol}//${window.location.hostname}:8080/videos/search?query=${encodeURIComponent(
+        `${baseUrl}videos/search?query=${encodeURIComponent(
           searchQuery
         )}&classId=${classId}`,
         {
@@ -252,7 +254,7 @@ const ClassDetails = () => {
 
     try {
       const response = await fetch(
-        `${window.location.protocol}//${window.location.hostname}:8080/videos/${videoToDelete}`,
+        `${baseUrl}videos/${videoToDelete}`,
         {
           method: "DELETE",
           headers: {

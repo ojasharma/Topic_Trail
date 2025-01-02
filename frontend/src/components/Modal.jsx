@@ -2,6 +2,8 @@ import React, { useState, useContext } from "react";
 import "./Modal.css";
 import { ThemeContext } from "./ThemeContext"; // Import the theme context
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 const token = localStorage.getItem("token");
 
 const Modal = ({ isOpen, onClose, type }) => {
@@ -16,8 +18,8 @@ const Modal = ({ isOpen, onClose, type }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const createurl = `${window.location.protocol}//${window.location.hostname}:8080/classes/create`;
-    const joinUrl = `${window.location.protocol}//${window.location.hostname}:8080/classes/join`;
+    const createurl = `${baseUrl}classes/create`;
+    const joinUrl = `${baseUrl}classes/join`;
 
     const data = type === "create" ? { title } : { classCode }; // Send title for create, classCode for join
 
@@ -26,7 +28,7 @@ const Modal = ({ isOpen, onClose, type }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify(data),
       });
