@@ -74,9 +74,9 @@ select:-moz-focusring {
 
 
 h1{
-    font-family: PT Serif, sans-serif;
+    font-family: PT Serif, sans-serif !important;
     margin-left: 2px;
-    font-size: 3em;
+    font-size: 3em !important;
     
 }
 

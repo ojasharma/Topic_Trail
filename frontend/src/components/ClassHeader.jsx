@@ -1,9 +1,7 @@
-// ClassHeader.js
 import React, { useState, useEffect } from "react";
-import { FaRegCopy, FaUpload } from "react-icons/fa";
-import { Sun, Moon } from "lucide-react"; // Using lucide icons for theme toggle
+import { FaRegCopy, FaUpload, FaArrowLeft } from "react-icons/fa"; // Importing the back icon
+import { Sun, Moon } from "lucide-react";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./ClassHeader.css";
 
@@ -16,16 +14,14 @@ const ClassHeader = ({ classCode, classId, onSearch, isCreator }) => {
   const [videoDescription, setVideoDescription] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  // const { id: classId } = useParams();
 
   const navigate = useNavigate();
 
   useEffect(() => {
-      // Initialize theme based on saved preference or default to light mode
-      const savedTheme = localStorage.getItem("theme") || "light";
-      setIsDarkMode(savedTheme === "dark");
-      document.documentElement.setAttribute("data-theme", savedTheme);
-    }, []);
+    const savedTheme = localStorage.getItem("theme") || "light";
+    setIsDarkMode(savedTheme === "dark");
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  }, []);
 
   const toggleTheme = () => {
     const newTheme = isDarkMode ? "light" : "dark";
@@ -49,7 +45,7 @@ const ClassHeader = ({ classCode, classId, onSearch, isCreator }) => {
 
   const handleRefreshClass = () => {
     window.location.reload();
-  }
+  };
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -91,7 +87,7 @@ const ClassHeader = ({ classCode, classId, onSearch, isCreator }) => {
       const result = await response.json();
       toast.success(result.message || "Video uploaded successfully!");
 
-      setTimeout(function(){
+      setTimeout(function () {
         window.location.reload();
       }, 3000);
 
@@ -108,12 +104,22 @@ const ClassHeader = ({ classCode, classId, onSearch, isCreator }) => {
 
   return (
     <div className="class-header">
+      <div className="back-button-container">
+        <button
+          className="back-button"
+          onClick={() => navigate(-1)}
+          aria-label="Go back"
+        >
+          <FaArrowLeft size={20} /> {/* Back icon */}
+        </button>
+      </div>
+
       <div className="logo-container">
-        <img 
-        src={isDarkMode ? "/logo_dark.png" : "/logo.png"}
-        alt="Logo" 
-        className="logo" 
-        onClick={handleRefreshClass}
+        <img
+          src={isDarkMode ? "/logo_dark.png" : "/logo.png"}
+          alt="Logo"
+          className="logo"
+          onClick={handleRefreshClass}
         />
       </div>
 
@@ -140,22 +146,18 @@ const ClassHeader = ({ classCode, classId, onSearch, isCreator }) => {
           <div className="copy-icon">
             <FaRegCopy onClick={handleCopyClick} />
           </div>
-
-          {/* <button className="copy-button" onClick={handleCopyClick}>
-            {copied ? "Copied!" : "Copy Code"}
-          </button> */}
         </div>
 
-        {isCreator && <div className="upload-button-container">
-          <div className="upload-icon">
-            <FaUpload
-              onClick={() => setShowUploadModal(true)}
-              disabled={isUploading}
-            />
-            {/* <div>Uploading</div> */}
+        {isCreator && (
+          <div className="upload-button-container">
+            <div className="upload-icon">
+              <FaUpload
+                onClick={() => setShowUploadModal(true)}
+                disabled={isUploading}
+              />
+            </div>
           </div>
-        </div>}
-
+        )}
       </div>
 
       {showUploadModal && (
@@ -186,7 +188,6 @@ const ClassHeader = ({ classCode, classId, onSearch, isCreator }) => {
                 {isUploading ? "Uploading..." : "Upload"}
               </button>
               <button
-                // className="cancel-button"
                 onClick={() => setShowUploadModal(false)}
                 disabled={isUploading}
               >

@@ -67,5 +67,8 @@ router.delete(
   ensureAuthenticated,
   VideoController.deleteVideo.bind(VideoController)
 );
+router.post("/:videoId/notes", ensureAuthenticated, VideoController.addNote);
+
+router.get("/:videoId/notes", ensureAuthenticated, VideoController.getNotes);
 
 module.exports = router;

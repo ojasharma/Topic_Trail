@@ -21,7 +21,7 @@
   border-radius: 6px;
   background-color: #fff;
   overflow: hidden;
-  box-shadow: -5px -5px 0px #c8c8c8, -10px -10px 0px #969696;
+  /* box-shadow: -5px -5px 0px #c8c8c8, -10px -10px 0px #969696; */
   cursor: pointer;
   transition: transform 0.3s ease;
   /* text-align: center; */
@@ -30,6 +30,41 @@
   position: relative; /* Required for absolute positioning of the button */
 }
 
+.video-topics {
+  margin-top: 8px;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.topics-dropdown {
+  width: 100%; /* Adjust width to fit container */
+  padding: 8px; /* Add padding for better appearance */
+  font-size: 14px; /* Ensure consistent font size */
+  border: 1px solid #ccc; /* Add a border for better visibility */
+  border-radius: 4px; /* Rounded corners */
+  background-color: #fff; /* Background color for dropdown */
+  color: #333; /* Text color */
+  cursor: pointer; /* Pointer cursor for interactive elements */
+}
+
+/* Hover effect for dropdown */
+.topics-dropdown:hover {
+  border-color: #888; /* Change border color on hover */
+}
+
+/* Dropdown for dark theme */
+[data-theme="dark"] .topics-dropdown {
+  background-color: #555; /* Dark background */
+  color: #fff; /* Light text */
+  border: 1px solid #777; /* Border for dark mode */
+}
+
+[data-theme="dark"] .topics-dropdown:hover {
+  border-color: #aaa; /* Hover effect for dark theme */
+}
+
+
 /* .video-card:hover {
   transform: scale(1.05);
   background-color: #dcd3e1;
@@ -37,6 +72,8 @@
 
 .video-card img {
   width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the whole image is visible */
 }
 
 .video-title {

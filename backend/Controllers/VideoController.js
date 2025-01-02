@@ -201,6 +201,46 @@ const VideoController = {
       res.status(500).json({ error: "Search failed", details: error.message });
     }
   },
+  // Add to VideoController
+  async addNote(req, res) {
+    try {
+      const { videoId } = req.params;
+      const { heading, content } = req.body;
+
+      const video = await VideoModel.findById(videoId);
+      if (!video) {
+        return res.status(404).json({ error: "Video not found" });
+      }
+
+      video.notes.push({
+        heading,
+        content,
+        userId: req.user._id,
+      });
+
+      await video.save();
+      res.status(201).json(video.notes[video.notes.length - 1]);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to add note" });
+    }
+  },
+
+  async getNotes(req, res) {
+    try {
+      const { videoId } = req.params;
+      const video = await VideoModel.findById(videoId);
+      if (!video) {
+        return res.status(404).json({ error: "Video not found" });
+      }
+
+      const userNotes = video.notes.filter(
+        (note) => note.userId.toString() === req.user._id.toString()
+      );
+      res.json(userNotes);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch notes" });
+    }
+  },
 };
 
 module.exports = VideoController;

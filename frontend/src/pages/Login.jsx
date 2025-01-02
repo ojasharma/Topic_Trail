@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { handleError, handleSuccess } from "../utils";
 import { useNavigate } from "react-router-dom";
+import { ThemeContext } from "../components/ThemeContext";
 import styles from "./login.module.css";
 
 function Login() {
@@ -12,10 +13,10 @@ function Login() {
   });
 
   const navigate = useNavigate();
+  const { isDarkMode } = useContext(ThemeContext); // Access theme context
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
     const copyLoginInfo = { ...loginInfo };
     copyLoginInfo[name] = value;
     setLoginInfo(copyLoginInfo);
@@ -51,7 +52,6 @@ function Login() {
       } else if (!success) {
         handleError(message);
       }
-      console.log(result);
     } catch (err) {
       handleError(err);
     }
@@ -59,7 +59,11 @@ function Login() {
 
   return (
     <>
-      <img src="/logo.png" alt="Topic Trail Logo" className={styles.logo} />
+      <img
+        src={isDarkMode ? "/logo_dark.png" : "/logo.png"} // Dynamic logo based on theme
+        alt="Topic Trail Logo"
+        className={styles.logo}
+      />
       <div className={styles.page}>
         <div className={styles.formside}>
           <div className={styles.container}>
