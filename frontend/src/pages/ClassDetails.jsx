@@ -35,7 +35,7 @@ const ClassDetails = () => {
 
     const fetchClasses = async () => {
 
-      const response = await fetch("http://localhost:8080/classes", {
+      const response = await fetch(`${window.location.protocol}//${window.location.hostname}:8080/classes`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -88,7 +88,7 @@ const ClassDetails = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/videos/class/${classId}`,
+        `${window.location.protocol}//${window.location.hostname}:8080/videos/class/${classId}`,
         {
           method: "GET",
           headers: {
@@ -124,7 +124,7 @@ const ClassDetails = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/videos/search?query=${encodeURIComponent(
+        `${window.location.protocol}//${window.location.hostname}:8080/videos/search?query=${encodeURIComponent(
           searchQuery
         )}&classId=${classId}`,
         {
@@ -252,7 +252,7 @@ const ClassDetails = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/videos/${videoToDelete}`,
+        `${window.location.protocol}//${window.location.hostname}:8080/videos/${videoToDelete}`,
         {
           method: "DELETE",
           headers: {
@@ -302,10 +302,6 @@ const ClassDetails = () => {
         isCreator={isCreator}
       />
       <div className="class-details-content">
-
-        <div className="class-details-back">
-          <FaArrowLeft onClick={handleClassBack} />
-        </div>
 
         {loading ? (
           <p>Loading videos...</p>
