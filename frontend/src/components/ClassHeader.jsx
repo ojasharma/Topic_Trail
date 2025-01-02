@@ -72,7 +72,7 @@ const ClassHeader = ({ classCode, classId, onSearch, isCreator }) => {
     formData.append("classId", classId);
 
     try {
-      const response = await fetch("http://localhost:8080/videos/upload", {
+      const response = await fetch(`${window.location.protocol}//${window.location.hostname}:8080/videos/upload`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

@@ -27,7 +27,7 @@ function Home() {
       }
 
       try {
-        const response = await fetch("http://localhost:8080/classes", {
+        const response = await fetch(`${window.location.protocol}//${window.location.hostname}:8080/classes`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -46,7 +46,7 @@ function Home() {
           result.classes.map(async (classItem) => {
             try {
               const videosResponse = await fetch(
-                `http://localhost:8080/videos/class/${classItem._id}`,
+                `${window.location.protocol}//${window.location.hostname}:8080/videos/class/${classItem._id}`,
                 {
                   method: "GET",
                   headers: {
@@ -102,7 +102,7 @@ function Home() {
     setOpenMenuId(null);
 
     try {
-      const response = await fetch(`http://localhost:8080/classes/${classId}`, {
+      const response = await fetch(`${window.location.protocol}//${window.location.hostname}:8080/classes/${classId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -127,7 +127,7 @@ function Home() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/classes/${classId}/leave`,
+        `${window.location.protocol}//${window.location.hostname}:8080/classes/${classId}/leave`,
         {
           method: "DELETE",
           headers: {

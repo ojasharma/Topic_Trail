@@ -38,7 +38,7 @@ const VideoDetails = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/videos/${videoId}`, {
+      const response = await fetch(`${window.location.protocol}//${window.location.hostname}:8080/videos/${videoId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -56,7 +56,7 @@ const VideoDetails = () => {
   const fetchNotes = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/videos/${videoId}/notes`,
+        `${window.location.protocol}//${window.location.hostname}:8080/videos/${videoId}/notes`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -75,7 +75,7 @@ const VideoDetails = () => {
   const handleAddNote = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/videos/${videoId}/notes`,
+        `${window.location.protocol}//${window.location.hostname}/videos/${videoId}/notes`,
         {
           method: "POST",
           headers: {

@@ -29,7 +29,7 @@ function Signup() {
       return handleError("All fields are mandatory.");
     }
     try {
-      const url = "http://localhost:8080/auth/signup"; //backend url
+      const url = `${window.location.protocol}//${window.location.hostname}:8080/auth/signup`; //backend url
       const response = await fetch(url, {
         method: "POST",
         headers: {
