@@ -75,7 +75,7 @@ const VideoDetails = () => {
   const handleAddNote = async () => {
     try {
       const response = await fetch(
-        `${window.location.protocol}//${window.location.hostname}/videos/${videoId}/notes`,
+        `${window.location.protocol}//${window.location.hostname}:8080/videos/${videoId}/notes`,
         {
           method: "POST",
           headers: {
