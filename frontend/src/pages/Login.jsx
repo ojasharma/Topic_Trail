@@ -16,6 +16,7 @@ function Login() {
 
   const navigate = useNavigate();
   const { isDarkMode } = useContext(ThemeContext); // Access theme context
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,12 +27,15 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (loading) return; // Prevent multiple submissions
     const { email, password } = loginInfo;
     if (!email || !password) {
       return handleError("All fields are mandatory.");
     }
+
+    setLoading(true); // Start loading
     try {
-      const url = `${baseUrl}auth/login`; //backend url
+      const url = `${baseUrl}auth/login`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -49,15 +53,18 @@ function Login() {
           navigate("/home");
         }, 1000);
       } else if (error) {
-        const details = error?.details[0].message;
+        const details = error?.details[0]?.message || "Something went wrong.";
         handleError(details);
-      } else if (!success) {
+      } else {
         handleError(message);
       }
     } catch (err) {
-      handleError(err);
+      handleError(err.message || "An unexpected error occurred.");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
+
 
   return (
     <>
@@ -106,7 +113,18 @@ function Login() {
                   value={loginInfo.password}
                 />
               </div>
-              <button type="submit">Login</button>
+              <button
+                type="submit"
+                disabled={loading}
+                className={`${
+                  loading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-[#392759] hover:bg-opacity-90"
+                } text-white font-roboto py-2 px-4 rounded transition-all duration-300`}
+              >
+                {loading ? "Logging in..." : "Login"}
+              </button>
+
               <span
                 className={`${
                   isDarkMode ? "text-white" : "text-black"

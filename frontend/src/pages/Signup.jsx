@@ -14,6 +14,7 @@ function Signup() {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false); // Track loading state
 
   const navigate = useNavigate();
   const { isDarkMode } = useContext(ThemeContext); // Access theme context
@@ -31,6 +32,7 @@ function Signup() {
     if (!name || !email || !password) {
       return handleError("All fields are mandatory.");
     }
+    setLoading(true); // Set loading state to true
     try {
       const url = `${baseUrl}auth/signup`; // Backend URL
       const response = await fetch(url, {
@@ -55,6 +57,8 @@ function Signup() {
       }
     } catch (err) {
       handleError(err);
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
 
@@ -128,7 +132,17 @@ function Signup() {
                   value={signupInfo.password}
                 />
               </div>
-              <button type="submit">Signup</button>
+              <button
+                type="submit"
+                disabled={loading} // Disable button while loading
+                className={`${
+                  loading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-[#392759] hover:bg-opacity-90"
+                } text-white font-roboto py-2 px-4 rounded transition-all duration-300`}
+              >
+                {loading ? "Signing up..." : "Signup"}
+              </button>
               <span
                 className={`${
                   isDarkMode ? "text-white" : "text-black"
