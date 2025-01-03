@@ -211,8 +211,12 @@
   background: #555;
 }
 
-[data-theme="dark"] .video-title, [data-theme="dark"] .video-topics, [data-theme="dark"] .video-topics select{
+[data-theme="dark"] .video-title, [data-theme="dark"] .video-topics, [data-theme="dark"] .video-topics select, [data-theme="dark"] .videos-section h2, [data-theme="dark"] .class-details-content p{
   color: #fff;
+}
+
+[data-theme="dark"] .video-content-right svg {
+  stroke: #fff;
 }
 
 [data-theme="dark"] .video-topics select {
