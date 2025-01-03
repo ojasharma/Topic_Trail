@@ -1,12 +1,22 @@
 .class-details-content{
   margin-top:100px;
   padding: 0px 30px;
-}
+ 
 
+
+}
+.class-details-content h2{
+    font-family: PT Serif, sans-serif ;
+    font-size: 30px;
+}
+.video-title{
+  font-family: Roboto !important;
+  font-size: 14px !important;
+}
 
 /* Container for video cards */
 .videos-grid {
-  /* font-family: PT; */
+
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 30px;
@@ -207,7 +217,6 @@
   font-size: 12px;
   margin-top: 3px;
 }
-
 [data-theme="dark"] .video-card {
   background: #555;
 }
