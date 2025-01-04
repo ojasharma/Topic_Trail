@@ -223,7 +223,7 @@ const VideoDetails = () => {
 
           <div className="relative">
             {showSummary && (
-              <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-lg mb-6">
+              <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-lg mb-6 h-96 overflow-y-auto">
                 {isCreator ? (
                   <EditableSummary
                     summary={selectedVideo.summary}

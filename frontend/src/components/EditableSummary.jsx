@@ -138,6 +138,14 @@ const EditableSummary = ({ summary, videoId, onSummaryUpdate }) => {
                   className="w-full p-2 border rounded dark:bg-zinc-700 dark:border-zinc-600 dark:text-white"
                   rows="3"
                 />
+                <div className="mt-2 flex justify-end">
+                  <button
+                    onClick={() => handleDeleteTopic(item._id, index)}
+                    className="inline-flex items-center px-2 py-1 text-red-600 hover:text-red-700 transition-colors"
+                  >
+                    <FaTrash className="mr-1" /> Delete
+                  </button>
+                </div>
               </>
             ) : (
               <>
@@ -149,15 +157,6 @@ const EditableSummary = ({ summary, videoId, onSummaryUpdate }) => {
                 </p>
               </>
             )}
-
-            <div className="mt-2 flex justify-end">
-              <button
-                onClick={() => handleDeleteTopic(item._id, index)}
-                className="inline-flex items-center px-2 py-1 text-red-600 hover:text-red-700 transition-colors"
-              >
-                <FaTrash className="mr-1" /> Delete
-              </button>
-            </div>
           </div>
         ))}
       </div>
