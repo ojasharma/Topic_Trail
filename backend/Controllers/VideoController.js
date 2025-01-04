@@ -241,6 +241,73 @@ const VideoController = {
       res.status(500).json({ error: "Failed to fetch notes" });
     }
   },
+  async updateSummary(req, res) {
+    try {
+      const { videoId } = req.params;
+      const { summary } = req.body;
+
+      const video = await VideoModel.findById(videoId);
+      if (!video) {
+        return res.status(404).json({ error: "Video not found" });
+      }
+
+      // Verify if the user is the creator of the class
+      const classDoc = await ClassModel.findById(video.classId);
+      if (
+        !classDoc ||
+        classDoc.creator.toString() !== req.user._id.toString()
+      ) {
+        return res
+          .status(403)
+          .json({ error: "Not authorized to edit summary" });
+      }
+
+      video.summary = summary;
+      await video.save();
+
+      res.json({
+        message: "Summary updated successfully",
+        summary: video.summary,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update summary" });
+    }
+  },
+
+  async deleteSummaryTopic(req, res) {
+    try {
+      const { videoId, topicId } = req.params;
+
+      const video = await VideoModel.findById(videoId);
+      if (!video) {
+        return res.status(404).json({ error: "Video not found" });
+      }
+
+      // Verify if the user is the creator of the class
+      const classDoc = await ClassModel.findById(video.classId);
+      if (
+        !classDoc ||
+        classDoc.creator.toString() !== req.user._id.toString()
+      ) {
+        return res
+          .status(403)
+          .json({ error: "Not authorized to delete topic" });
+      }
+
+      video.summary = video.summary.filter(
+        (topic) => topic._id.toString() !== topicId
+      );
+      await video.save();
+
+      res.json({
+        message: "Topic deleted successfully",
+        summary: video.summary,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete topic" });
+    }
+  },
 };
+
 
 module.exports = VideoController;

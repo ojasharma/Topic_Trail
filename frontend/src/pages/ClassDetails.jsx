@@ -291,10 +291,9 @@ const ClassDetails = () => {
     setIsModalOpen(false);
   };
 
-  const handleCardClick = (videoId) => {
-    window.location.href = `/video/${videoId}`;
-  };
-
+const handleCardClick = (videoId) => {
+  window.location.href = `/video/${videoId}?isCreator=${isCreator}`;
+};
   return (
     <div className="class-details">
       <ClassHeader

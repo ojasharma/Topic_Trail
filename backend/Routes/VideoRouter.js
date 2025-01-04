@@ -71,4 +71,15 @@ router.post("/:videoId/notes", ensureAuthenticated, VideoController.addNote);
 
 router.get("/:videoId/notes", ensureAuthenticated, VideoController.getNotes);
 
+router.put(
+  "/:videoId/summary",
+  ensureAuthenticated,
+  VideoController.updateSummary
+);
+router.delete(
+  "/:videoId/summary/:topicId",
+  ensureAuthenticated,
+  VideoController.deleteSummaryTopic
+);
+
 module.exports = router;

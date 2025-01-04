@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import {
   FaChevronDown,
@@ -10,9 +11,12 @@ import {
 } from "react-icons/fa";
 import Header from "../components/HeaderVideo";
 import CustomVideoPlayer from "../components/CustomVideoPlayer";
+import EditableSummary from "../components/EditableSummary";
 
 const VideoDetails = () => {
   const { videoId } = useParams();
+  const location = useLocation();
+  const [isCreator, setIsCreator] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showSummary, setShowSummary] = useState(false);
@@ -28,10 +32,18 @@ const VideoDetails = () => {
 
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
-  useEffect(() => {
+    useEffect(() => {
+    // Get isCreator from URL parameters
+    const searchParams = new URLSearchParams(location.search);
+    const creatorStatus = searchParams.get('isCreator') === 'true';
+    setIsCreator(creatorStatus);
+    
+    // Log creator status
+    console.log(creatorStatus ? "the user is a creator" : "the user is not a creator");
+    
     fetchVideoDetails();
     fetchNotes();
-  }, [videoId]);
+  }, [videoId, location]);
 
   const fetchVideoDetails = async () => {
     if (!token) {
@@ -211,23 +223,40 @@ const VideoDetails = () => {
 
           <div className="relative">
             {showSummary && (
-              <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-lg mb-6 h-96 overflow-y-auto">
-                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-                  Summary
-                </h3>
-                {selectedVideo.summary.length > 0 ? (
-                  selectedVideo.summary.map((item, index) => (
-                    <div key={index} className="mb-4">
-                      <h4 className="font-medium mb-2 text-gray-900 dark:text-white">
-                        {item.title}
-                      </h4>
-                      <p className="text-gray-700 dark:text-gray-300">
-                        {item.content}
-                      </p>
-                    </div>
-                  ))
+              <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-lg mb-6">
+                {isCreator ? (
+                  <EditableSummary
+                    summary={selectedVideo.summary}
+                    videoId={videoId}
+                    onSummaryUpdate={(updatedSummary) => {
+                      setSelectedVideo({
+                        ...selectedVideo,
+                        summary: updatedSummary,
+                      });
+                    }}
+                  />
                 ) : (
-                  <p className="dark:text-gray-300">No summary available.</p>
+                  // Read-only view for non-creators
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                      Summary
+                    </h3>
+                    <div className="space-y-4">
+                      {selectedVideo.summary.map((item, index) => (
+                        <div
+                          key={index}
+                          className="p-4 bg-gray-50 dark:bg-zinc-800 rounded-lg"
+                        >
+                          <h4 className="font-medium mb-2 text-gray-900 dark:text-white">
+                            {item.title}
+                          </h4>
+                          <p className="text-gray-700 dark:text-gray-300">
+                            {item.content}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
             )}
