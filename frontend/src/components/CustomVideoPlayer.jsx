@@ -17,10 +17,25 @@ const CustomVideoPlayer = ({ url, thumbnail }) => {
   const [muted, setMuted] = useState(false);
   const [played, setPlayed] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
   const playerRef = useRef(null);
   const containerRef = useRef(null);
   const clickTimeoutRef = useRef(null);
   const clickCountRef = useRef(0);
+
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, "0")}:${secs
+        .toString()
+        .padStart(2, "0")}`;
+    }
+    return `${minutes}:${secs.toString().padStart(2, "0")}`;
+  };
 
   const handlePlayPause = () => {
     setPlaying(!playing);
@@ -36,6 +51,11 @@ const CustomVideoPlayer = ({ url, thumbnail }) => {
 
   const handleProgress = (state) => {
     setPlayed(state.played);
+    setCurrentTime(state.playedSeconds);
+  };
+
+  const handleDuration = (duration) => {
+    setDuration(duration);
   };
 
   const handleSeekChange = (e) => {
@@ -69,7 +89,6 @@ const CustomVideoPlayer = ({ url, thumbnail }) => {
   };
 
   const handleVideoClick = (e) => {
-    // Ignore clicks on controls
     if (e.target.closest(".controls-wrapper")) {
       return;
     }
@@ -78,12 +97,10 @@ const CustomVideoPlayer = ({ url, thumbnail }) => {
 
     if (clickCountRef.current === 1) {
       clickTimeoutRef.current = setTimeout(() => {
-        // Single click - toggle play/pause
         handlePlayPause();
         clickCountRef.current = 0;
       }, 300);
     } else if (clickCountRef.current === 2) {
-      // Double click - toggle fullscreen
       clearTimeout(clickTimeoutRef.current);
       handleFullscreen();
       clickCountRef.current = 0;
@@ -106,6 +123,7 @@ const CustomVideoPlayer = ({ url, thumbnail }) => {
         width="100%"
         height="100%"
         onProgress={handleProgress}
+        onDuration={handleDuration}
         light={
           <img src={thumbnail} alt="Thumbnail" className="video-thumbnail" />
         }
@@ -113,6 +131,11 @@ const CustomVideoPlayer = ({ url, thumbnail }) => {
       />
 
       <div className="controls-wrapper">
+        <div className="time-indicators">
+          <span className="time-current">{formatTime(currentTime)}</span>
+          <span className="time-duration">{formatTime(duration)}</span>
+        </div>
+
         <input
           type="range"
           min={0}

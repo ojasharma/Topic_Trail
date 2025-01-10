@@ -81,5 +81,10 @@ router.delete(
   ensureAuthenticated,
   VideoController.deleteSummaryTopic
 );
+router.post(
+  "/:videoId/generate-quiz",
+  ensureAuthenticated,
+  VideoController.generateQuiz
+);
 
 module.exports = router;

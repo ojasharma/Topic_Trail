@@ -2,6 +2,8 @@ const VideoModel = require("../Models/Video");
 const ClassModel = require("../Models/Class");
 const CloudinaryService = require("../services/CloudinaryService");
 const { processVideo } = require("../utils/VideoProcessing");
+const GroqService = require("../services/GroqService");
+const groqService = new GroqService();
 
 const cloudinaryService = new CloudinaryService();
 
@@ -305,6 +307,92 @@ const VideoController = {
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to delete topic" });
+    }
+  },
+  async generateQuiz(req, res) {
+    try {
+      const { videoId } = req.params;
+      const { numberOfQuestions, difficulty, additionalInstructions } =
+        req.body;
+
+      // Input validation
+      if (!numberOfQuestions || !difficulty) {
+        return res.status(400).json({
+          error:
+            "Missing required fields: numberOfQuestions and difficulty are required",
+        });
+      }
+
+      // Validate numberOfQuestions
+      const questionsCount = parseInt(numberOfQuestions);
+      if (isNaN(questionsCount) || questionsCount < 1 || questionsCount > 20) {
+        return res.status(400).json({
+          error: "numberOfQuestions must be between 1 and 20",
+        });
+      }
+
+      // Validate difficulty
+      const validDifficulties = ["easy", "medium", "hard"];
+      if (!validDifficulties.includes(difficulty.toLowerCase())) {
+        return res.status(400).json({
+          error: "difficulty must be one of: easy, medium, hard",
+        });
+      }
+
+      // Get video and verify existence
+      const video = await VideoModel.findById(videoId);
+      if (!video) {
+        return res.status(404).json({ error: "Video not found" });
+      }
+
+      // Check if video has summary
+      if (!video.summary || video.summary.length === 0) {
+        return res.status(400).json({
+          error: "Video does not have a summary to generate quiz from",
+        });
+      }
+
+      // Update quiz generation status
+      video.mcqGenerationStatus = "processing";
+      await video.save();
+
+      // Generate quiz using Groq
+      const quiz = await groqService.generateQuiz(
+        video.summary,
+        questionsCount,
+        difficulty,
+        additionalInstructions
+      );
+
+      // Update video with new MCQs
+      video.mcqs = quiz.mcqs;
+      video.mcqGenerationStatus = "completed";
+      await video.save();
+
+      res.json({
+        message: "Quiz generated successfully",
+        mcqs: quiz.mcqs,
+      });
+    } catch (error) {
+      console.error("Quiz generation error:", error);
+
+      // Update status to failed if there was an error
+      if (req.params.videoId) {
+        try {
+          const video = await VideoModel.findById(req.params.videoId);
+          if (video) {
+            video.mcqGenerationStatus = "failed";
+            await video.save();
+          }
+        } catch (updateError) {
+          console.error("Error updating video status:", updateError);
+        }
+      }
+
+      res.status(500).json({
+        error: "Failed to generate quiz",
+        details: error.message,
+      });
     }
   },
 };
