@@ -24,7 +24,7 @@ class GroqService {
           {
             role: "system",
             content:
-              "You are a quiz generation AI. You must respond with ONLY a valid JSON object containing MCQs, without any markdown formatting or code blocks. Do not include any explanatory text or code block markers.",
+              "You are a quiz generation AI. You must respond with ONLY a valid JSON object containing MCQs without any markdown formatting or code blocks. Do not include any explanatory text or code block markers.",
           },
           {
             role: "user",
@@ -87,7 +87,8 @@ class GroqService {
       1. Exactly ${numberOfQuestions} questions
       2. Difficulty level: ${difficulty}
       3. ${additionalInstructions}
-    ***[But the thing is you do not have to only generate questions which are about the video and what happened in it , most questions should be about the topic , you should look at topics being explained in the content and use them for creating the questions from your knowledge.]
+    [But the thing is you do not have to only generate questions which are about the video and what happened in it , 
+    most questions should be about the topic , you should look at topics being explained in the content and use them for creating the questions from your knowledge.]
       IMPORTANT: You must respond with ONLY a valid JSON object in this exact format:
       {
         "mcqs": [
@@ -120,7 +121,7 @@ class GroqService {
     };
     return guidelines[difficulty.toLowerCase()] || guidelines.medium;
   }
-``
+
   _validateQuizFormat(quiz) {
     if (!quiz.mcqs || !Array.isArray(quiz.mcqs)) {
       throw new Error("Invalid quiz format: mcqs array is missing");
