@@ -15,7 +15,7 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [filter, setFilter] = useState("all");
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
 
   const { isDarkMode } = useContext(ThemeContext); // Accessing dark mode state
@@ -95,7 +95,7 @@ function Home() {
   }, [token]);
 
   const handleCardClick = (classId, classCode) => {
-    localStorage.setItem("classCode", classCode);
+    sessionStorage.setItem("classCode", classCode);
     navigate(`/class/${classId}`);
   };
 
@@ -128,16 +128,13 @@ function Home() {
     setOpenMenuId(null);
 
     try {
-      const response = await fetch(
-        `${baseUrl}classes/${classId}/leave`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${baseUrl}classes/${classId}/leave`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         const errorData = await response.json();

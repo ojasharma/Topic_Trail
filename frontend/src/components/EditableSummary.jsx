@@ -6,7 +6,7 @@ const EditableSummary = ({ summary, videoId, onSummaryUpdate }) => {
   const [editedSummary, setEditedSummary] = useState(summary);
   const [originalSummary, setOriginalSummary] = useState(summary);
   const baseUrl = import.meta.env.VITE_BASE_URL;
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   const handleEdit = () => {
     setOriginalSummary(summary);

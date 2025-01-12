@@ -98,7 +98,7 @@ const VideoDetails = () => {
   const [quizScore, setQuizScore] = useState(0);
   const [showQuizForm, setShowQuizForm] = useState(false);
   const [generatingQuiz, setGeneratingQuiz] = useState(false);
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
   useEffect(() => {
@@ -135,48 +135,51 @@ const VideoDetails = () => {
     }
   };
 
-const handleGenerateQuiz = async (formData) => {
-  setGeneratingQuiz(true);
-  // Reset quiz-related states when generating new quiz
-  setUserAnswers({});
-  setQuizSubmitted(false);
-  setQuizScore(0);
-
-  try {
-    const response = await fetch(`${baseUrl}videos/${videoId}/generate-quiz`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(formData),
-    });
-
-    if (!response.ok) throw new Error("Failed to generate quiz");
-
-    const result = await response.json();
-
-    // Update the selected video with new MCQs
-    setSelectedVideo((prev) => ({
-      ...prev,
-      mcqs: result.mcqs.map((mcq) => ({
-        ...mcq,
-        _id: mcq._id || `mcq-${Math.random().toString(36).substr(2, 9)}`, // Ensure each MCQ has a unique ID
-      })),
-    }));
-
-    setShowQuizForm(false);
-    toast.success("Quiz generated successfully!");
-  } catch (error) {
-    toast.error(error.message);
-    // Reset quiz-related states on error
+  const handleGenerateQuiz = async (formData) => {
+    setGeneratingQuiz(true);
+    // Reset quiz-related states when generating new quiz
     setUserAnswers({});
     setQuizSubmitted(false);
     setQuizScore(0);
-  } finally {
-    setGeneratingQuiz(false);
-  }
-};
+
+    try {
+      const response = await fetch(
+        `${baseUrl}videos/${videoId}/generate-quiz`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to generate quiz");
+
+      const result = await response.json();
+
+      // Update the selected video with new MCQs
+      setSelectedVideo((prev) => ({
+        ...prev,
+        mcqs: result.mcqs.map((mcq) => ({
+          ...mcq,
+          _id: mcq._id || `mcq-${Math.random().toString(36).substr(2, 9)}`, // Ensure each MCQ has a unique ID
+        })),
+      }));
+
+      setShowQuizForm(false);
+      toast.success("Quiz generated successfully!");
+    } catch (error) {
+      toast.error(error.message);
+      // Reset quiz-related states on error
+      setUserAnswers({});
+      setQuizSubmitted(false);
+      setQuizScore(0);
+    } finally {
+      setGeneratingQuiz(false);
+    }
+  };
   const fetchNotes = async () => {
     try {
       const response = await fetch(`${baseUrl}videos/${videoId}/notes`, {

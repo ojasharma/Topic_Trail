@@ -8,7 +8,7 @@ const Header = () => {
 
   useEffect(() => {
     // Initialize theme based on saved preference or default to light mode
-    const savedTheme = localStorage.getItem("theme") || "light";
+    const savedTheme = sessionStorage.getItem("theme") || "light";
     setIsDarkMode(savedTheme === "dark");
     document.documentElement.setAttribute("data-theme", savedTheme);
   }, []);
@@ -16,7 +16,7 @@ const Header = () => {
   const toggleTheme = () => {
     const newTheme = isDarkMode ? "light" : "dark";
     setIsDarkMode(!isDarkMode);
-    localStorage.setItem("theme", newTheme);
+    sessionStorage.setItem("theme", newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
   };
 

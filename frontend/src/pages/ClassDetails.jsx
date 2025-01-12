@@ -24,19 +24,17 @@ const ClassDetails = () => {
   const [isCreator, setCreator] = useState(false);
   const [videoToDelete, setVideoToDelete] = useState(null);
   const [openMenuId, setOpenMenuId] = useState(null);
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedClassCode = localStorage.getItem("classCode");
+    const storedClassCode = sessionStorage.getItem("classCode");
     if (storedClassCode) {
       setClassCode(storedClassCode);
     }
 
-
     const fetchClasses = async () => {
-
       const response = await fetch(`${baseUrl}classes`, {
         method: "GET",
         headers: {
@@ -57,7 +55,9 @@ const ClassDetails = () => {
       let myClassCreator;
 
       if (allClasses) {
-        myClass = allClasses.classes.filter(myClass => myClass._id == classId);
+        myClass = allClasses.classes.filter(
+          (myClass) => myClass._id == classId
+        );
       }
 
       if (myClass) {
@@ -68,11 +68,9 @@ const ClassDetails = () => {
           setCreator(true);
         }
       }
-
-    }
+    };
 
     let allClasses = fetchClasses();
-
   }, []);
 
   const fetchVideos = async () => {
@@ -89,16 +87,13 @@ const ClassDetails = () => {
     }
 
     try {
-      const response = await fetch(
-        `${baseUrl}videos/class/${classId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${baseUrl}videos/class/${classId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch videos. Please try again.");
@@ -149,9 +144,9 @@ const ClassDetails = () => {
   };
 
   const handleDeleteVideo = async (classId, event) => {
-      event.stopPropagation();
-      setOpenMenuId(null);
-    };
+    event.stopPropagation();
+    setOpenMenuId(null);
+  };
 
   const debouncedSearch = useCallback(
     debounce((query) => handleSearch(query), 300),
@@ -182,63 +177,58 @@ const ClassDetails = () => {
             )} */}
 
               <img src={video.thumbnailUrl} />
-
-
-
             </div>
             <div className="classVideoContent">
-
               <div className="video-content-left">
-
                 <h2 className="video-title">{video.title}</h2>
                 {video.summary && (
                   <div className="video-topics">
                     <span>Topics: </span>
                     <select key={video._id}>
-                    {video.summary.map((item, index) => (
-                      // <span key={index} className="topic-tag">
-                      //   {item.title}
-                      // </span>
-                      <option value={item.title} key={index}>{item.title}</option>
-                    ))}
+                      {video.summary.map((item, index) => (
+                        // <span key={index} className="topic-tag">
+                        //   {item.title}
+                        // </span>
+                        <option value={item.title} key={index}>
+                          {item.title}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 )}
-
               </div>
 
               <div className="video-content-right">
-
-
                 <div className={styles.options}>
-                  {isCreator && <button
-                    className={styles.menuButton}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setOpenMenuId(
-                        openMenuId === video._id ? null : video._id
-                      );
-                    }}
-                  >
-                    <MoreVertical size={20} />
-                  </button>}
+                  {isCreator && (
+                    <button
+                      className={styles.menuButton}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenMenuId(
+                          openMenuId === video._id ? null : video._id
+                        );
+                      }}
+                    >
+                      <MoreVertical size={20} />
+                    </button>
+                  )}
                   {openMenuId === video._id && (
                     <div className={styles.menuDropdown}>
                       {isCreator && (
-                        <button onClick={(e) => {
-                          e.stopPropagation();
-                          openModal(video._id);
-                        }}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openModal(video._id);
+                          }}
+                        >
                           Delete Video
                         </button>
                       )}
                     </div>
                   )}
                 </div>
-
               </div>
-
-
             </div>
           </div>
         ))}
@@ -253,16 +243,13 @@ const ClassDetails = () => {
     }
 
     try {
-      const response = await fetch(
-        `${baseUrl}videos/${videoToDelete}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${baseUrl}videos/${videoToDelete}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -279,7 +266,7 @@ const ClassDetails = () => {
 
   const handleClassBack = () => {
     navigate("/home");
-  }
+  };
 
   const openModal = (videoId) => {
     setVideoToDelete(videoId);
@@ -291,9 +278,9 @@ const ClassDetails = () => {
     setIsModalOpen(false);
   };
 
-const handleCardClick = (videoId) => {
-  window.location.href = `/video/${videoId}?isCreator=${isCreator}`;
-};
+  const handleCardClick = (videoId) => {
+    window.location.href = `/video/${videoId}?isCreator=${isCreator}`;
+  };
   return (
     <div className="class-details">
       <ClassHeader
@@ -303,7 +290,6 @@ const handleCardClick = (videoId) => {
         isCreator={isCreator}
       />
       <div className="class-details-content">
-
         {loading ? (
           <p>Loading videos...</p>
         ) : searchResults ? (

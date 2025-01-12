@@ -4,7 +4,7 @@ import { ThemeContext } from "./ThemeContext"; // Import the theme context
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
-const token = localStorage.getItem("token");
+const token = sessionStorage.getItem("token");
 
 const Modal = ({ isOpen, onClose, type }) => {
   const { isDarkMode } = useContext(ThemeContext); // Access the dark mode state from context
@@ -28,7 +28,7 @@ const Modal = ({ isOpen, onClose, type }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
       });
