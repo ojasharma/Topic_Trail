@@ -40,7 +40,7 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-transparent relative">
+    <div className="min-h-screen bg-[#121212] relative text-white">
       <div className="absolute inset-0 z-1">
         <CursorEffect />
       </div>

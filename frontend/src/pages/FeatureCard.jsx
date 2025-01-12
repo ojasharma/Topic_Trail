@@ -53,7 +53,7 @@ const FeatureCard = ({ title, description, imgSrc }) => {
   return (
     <div
       ref={cardRef}
-      className="flex-shrink-0 w-64 p-6 mx-2 bg-white rounded-lg shadow-lg dark:bg-gray-800"
+      className="flex-shrink-0 w-64 p-6 mx-2 bg-gray-800 text-white dark:bg-gray-800 rounded-lg shadow-lg dark:text-white"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{
@@ -68,9 +68,11 @@ const FeatureCard = ({ title, description, imgSrc }) => {
           className="w-8 h-8 mr-2"
           style={{ filter: "invert(1)" }} // Make the logo white using invert
         />
-        <h3 className="text-xl font-semibold text-white">{title}</h3>
+        <h3 className="text-xl font-semibold text-white dark:text-white">
+          {title}
+        </h3>
       </div>
-      <p className="text-gray-600 dark:text-gray-300 glowing-description">
+      <p className="text-gray-300 dark:text-gray-300 glowing-description">
         {highlightKeywords(description)}
       </p>
     </div>
