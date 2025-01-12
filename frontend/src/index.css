@@ -84,3 +84,17 @@ button{
     align-items: center;
   }
 }
+/* 
+.glowing-description {
+  color: #fff; 
+  text-shadow: 
+    0 0 1px rgba(255, 255, 255, 0.8),
+    0 0 2px rgba(255, 255, 255, 0.8);
+}
+
+.glowing-text {
+  color: #C8A2C8; 
+  text-shadow: 
+    0 0 1px rgba(255, 255, 255, 0.8),
+    0 0 2px rgba(255, 255, 255, 0.8);
+} */

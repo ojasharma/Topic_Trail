@@ -47,8 +47,9 @@ function Login() {
       const { success, message, jwtToken, name, error } = result;
       if (success) {
         handleSuccess(message);
-        localStorage.setItem("token", jwtToken);
-        localStorage.setItem("loggedInUser", name);
+        // Store token and user name in sessionStorage
+        sessionStorage.setItem("token", jwtToken);
+        sessionStorage.setItem("loggedInUser", name);
         setTimeout(() => {
           navigate("/home");
         }, 1000);
@@ -64,7 +65,6 @@ function Login() {
       setLoading(false); // Stop loading
     }
   };
-
 
   return (
     <>
