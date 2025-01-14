@@ -5,7 +5,7 @@
   padding: 10px 20px;
   display: flex;
   align-items: center;
-  border-bottom: 2px solid #7331ac;
+  border-bottom: 1px solid #7331ac;
 }
 
 .logo {
@@ -14,19 +14,23 @@
 }
 
 .profileContainer {
-  max-width: 600px; /* Smaller width for a modern look */
+
+  max-width: 600px;
   margin: 20px auto;
+  margin-top: 100px;
   background-color: #000000;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(115, 49, 172, 0.5);
+  /* box-shadow: 0 4px 10px rgba(115, 49, 172, 0.5); */
   border: 1px solid #7331ac;
 }
 
 .profilePictureContainer {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 20px;
+  gap: 10px;
 }
 
 .profilePicture {
@@ -56,4 +60,192 @@
 
 .value {
   color: #ffffff;
+}
+
+/* New Styles for Buttons */
+.editButton, .saveButton, .cancelButton, .changePasswordButton {
+  color: white !important;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  border: 1px solid #7331ac;
+}
+
+.editButton {
+  background-color: transparent;
+  color: #7331ac;
+  border: 1px solid #7331ac;
+}
+
+.editButton:hover {
+  background-color: rgba(115, 49, 172, 0.1);
+}
+
+.saveButton {
+  background-color: #7331ac;
+  color: white;
+  border: none;
+}
+
+.saveButton:hover {
+  background-color: #8b42cc;
+}
+
+.cancelButton {
+  background-color: transparent;
+  color: #999;
+  border: 1px solid #666;
+}
+
+.cancelButton:hover {
+  background-color: rgba(102, 102, 102, 0.1);
+}
+
+.changePasswordButton {
+  background-color: transparent;
+  color: #7331ac;
+  border: 1px solid #7331ac;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.changePasswordButton:hover {
+  background-color: rgba(115, 49, 172, 0.1);
+}
+
+.deleteButton {
+  background-color: #dc2626;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.deleteButton:hover {
+  background-color: #ef4444;
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: #000000;
+  padding: 24px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  border: 1px solid #7331ac;
+  /* box-shadow: 0 4px 20px rgba(115, 49, 172, 0.5); */
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #7331ac;
+  border-bottom: 1px solid #7331ac;
+  padding-bottom: 10px;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Form Input Styles */
+.input {
+  width: 100%;
+  padding: 8px 12px;
+  margin: 8px 0;
+  background-color: #111;
+  border: 1px solid #7331ac;
+  border-radius: 5px;
+  color: white;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #8b42cc;
+  /* box-shadow: 0 0 0 2px rgba(115, 49, 172, 0.2); */
+}
+
+.fileInput {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  color: white;
+}
+
+.fileInput::-webkit-file-upload-button {
+  background-color: #7331ac;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.fileInput::-webkit-file-upload-button:hover {
+  background-color: #8b42cc;
+}
+
+/* Edit Name Container */
+.editNameContainer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.nameContainer {
+   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100;
+}
+
+/* Container for delete button */
+.deleteAccountContainer {
+  margin-top: 30px;
+  border-top: 1px solid #7331ac;
+  padding-top: 20px;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.iconButton:hover {
+  color: #333;
 }
