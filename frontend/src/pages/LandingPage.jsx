@@ -41,7 +41,7 @@ const LandingPage = () => {
       imgSrc: "/four.png",
     },
     {
-      title: "Interactive Doubt Resolution (soming soon)",
+      title: "Interactive Doubt Resolution (coming soon)",
       description:
         "Ask questions effortlessly, receive prompt answers from instructors, and utilize a smart doubt tracker to monitor and manage all queries for a seamless learning experience.",
       imgSrc: "/five.png",
