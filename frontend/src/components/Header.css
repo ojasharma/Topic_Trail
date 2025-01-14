@@ -110,3 +110,146 @@ header.dark .dropdown-item:hover {
     background-color: #333;
 }
 
+/* Icon styling */
+.icons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 40px;
+  gap: 20px;
+}
+
+/* Make all icons the same size */
+.theme-toggle svg,
+.plus-icon,
+.profile-picture {
+  width: 24px;
+  height: 24px;
+}
+
+/* Theme toggle button styling */
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 36px;
+  border-radius: 50%;
+}
+
+.theme-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark .theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Plus icon container */
+.plus-container {
+  position: relative;
+  height: 36px;
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.plus-container:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark .plus-container:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Profile button styling */
+.profile-container {
+  position: relative;
+}
+
+.profile-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  height: 36px;
+  width: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.profile-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark .profile-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-picture {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: var(--bg-color, white);
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  list-style-type: none;
+  margin: 0;
+  padding: 4px 0;
+  min-width: 150px;
+  z-index: 9999;
+}
+
+.dark .dropdown-menu {
+  background-color: #2a2a2a;
+  border-color: #444;
+}
+
+.dropdown-item {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  color: inherit;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Dropdown icons */
+.dropdown-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Profile dropdown specific styling */
+.profile-dropdown {
+  min-width: 180px;
+}
