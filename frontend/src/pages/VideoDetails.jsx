@@ -8,12 +8,11 @@ import {
   FaQuestionCircle,
   FaStickyNote,
   FaPlusCircle,
-  FaClipboard,
+  FaClipboardList,
 } from "react-icons/fa";
 import Header from "../components/HeaderVideo";
 import CustomVideoPlayer from "../components/CustomVideoPlayer";
 import EditableSummary from "../components/EditableSummary";
-import { AssignmentForm, AssignmentView } from "./AssignmentComponents";
 
 const QuizForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -104,6 +103,8 @@ const VideoDetails = () => {
   const [showAssignment, setShowAssignment] = useState(false);
   const [assignment, setAssignment] = useState(null);
   const [submissions, setSubmissions] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [newAssignment, setNewAssignment] = useState("");
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
   useEffect(() => {
@@ -112,6 +113,7 @@ const VideoDetails = () => {
     setIsCreator(creatorStatus);
     fetchVideoDetails();
     fetchNotes();
+    fetchAssignment();
   }, [videoId, location]);
 
   const fetchAssignment = async () => {
@@ -124,27 +126,36 @@ const VideoDetails = () => {
       if (response.ok) {
         const result = await response.json();
         setAssignment(result);
-
-        // Fetch submissions if assignment exists
-        const submissionsResponse = await fetch(
-          `${baseUrl}videos/${videoId}/assignment/submissions`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (submissionsResponse.ok) {
-          const submissionsResult = await submissionsResponse.json();
-          setSubmissions(submissionsResult);
+        // Fetch submissions only if assignment exists
+        if (result) {
+          fetchSubmissions();
         }
       }
     } catch (err) {
-      toast.error("Failed to fetch assignment");
+      console.error("Failed to fetch assignment:", err);
     }
   };
 
-  const handleCreateAssignment = async (data) => {
+  const fetchSubmissions = async () => {
+    try {
+      const response = await fetch(
+        `${baseUrl}videos/${videoId}/assignment/submissions`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        setSubmissions(result);
+      }
+    } catch (err) {
+      console.error("Failed to fetch submissions:", err);
+    }
+  };
+
+  const handleAddAssignment = async () => {
     try {
       const response = await fetch(`${baseUrl}videos/${videoId}/assignment`, {
         method: "POST",
@@ -152,18 +163,34 @@ const VideoDetails = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ question: newAssignment }),
       });
+
       if (response.ok) {
-        toast.success("Assignment created successfully");
+        toast.success("Assignment added successfully");
         fetchAssignment();
+        setNewAssignment("");
+      } else {
+        throw new Error("Failed to add assignment");
       }
     } catch (err) {
-      toast.error("Failed to create assignment");
+      toast.error(err.message);
     }
   };
 
-  const handleSubmitAssignment = async (formData) => {
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  const handleSubmitAssignment = async () => {
+    if (!selectedFile) {
+      toast.error("Please select a file to upload");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("image", selectedFile);
+
     try {
       const response = await fetch(
         `${baseUrl}videos/${videoId}/assignment/submit`,
@@ -175,12 +202,16 @@ const VideoDetails = () => {
           body: formData,
         }
       );
+
       if (response.ok) {
         toast.success("Assignment submitted successfully");
-        fetchAssignment();
+        fetchSubmissions();
+        setSelectedFile(null);
+      } else {
+        throw new Error("Failed to submit assignment");
       }
     } catch (err) {
-      toast.error("Failed to submit assignment");
+      toast.error(err.message);
     }
   };
 
@@ -387,7 +418,7 @@ const VideoDetails = () => {
         {/* Right column with interactive sections */}
         <div className="flex-1 min-w-[40%] bg-gray-50 dark:bg-zinc-900 p-6 rounded-lg shadow-lg">
           {/* Section toggle buttons */}
-          <div className="grid grid-cols-3 gap-2 mb-6">
+          <div className="grid grid-cols-4 gap-2 mb-6">
             {["Summary", "Quiz", "Notes", "Assignment"].map((item) => (
               <button
                 key={item}
@@ -407,7 +438,7 @@ const VideoDetails = () => {
                 )}
                 {item === "Notes" && <FaStickyNote className="flex-shrink-0" />}
                 {item === "Assignment" && (
-                  <FaClipboard className="flex-shrink-0" />
+                  <FaClipboardList className="flex-shrink-0" />
                 )}
                 <span className="hidden md:inline">{item}</span>
                 {(item === "Summary" && showSummary) ||
@@ -615,16 +646,115 @@ const VideoDetails = () => {
                 <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
                   Assignment
                 </h3>
-                {isCreator && !assignment && (
-                  <AssignmentForm onSubmit={handleCreateAssignment} />
-                )}
-                {assignment && (
-                  <AssignmentView
-                    assignment={assignment}
-                    submissions={submissions}
-                    isCreator={isCreator}
-                    onSubmit={handleSubmitAssignment}
-                  />
+
+                {isCreator ? (
+                  <div className="space-y-4">
+                    {!assignment ? (
+                      <div>
+                        <textarea
+                          value={newAssignment}
+                          onChange={(e) => setNewAssignment(e.target.value)}
+                          placeholder="Enter assignment question..."
+                          className="w-full p-2 border rounded h-24 dark:bg-zinc-800 dark:text-white dark:border-zinc-700"
+                        />
+                        <button
+                          onClick={handleAddAssignment}
+                          className="mt-2 w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white py-2 px-4 rounded-lg transition-colors"
+                        >
+                          Add Assignment
+                        </button>
+                      </div>
+                    ) : (
+                      <div>
+                        <div className="bg-gray-50 dark:bg-zinc-800 p-4 rounded-lg mb-4">
+                          <h4 className="font-medium mb-2">Question:</h4>
+                          <p>{assignment.question}</p>
+                        </div>
+                        <h4 className="font-medium mb-2">Submissions:</h4>
+                        <div className="space-y-4">
+                          {submissions.map((submission) => (
+                            <div
+                              key={submission._id}
+                              className="border dark:border-zinc-700 p-4 rounded-lg"
+                            >
+                              <p className="font-medium mb-2">
+                                {submission.userName}
+                              </p>
+                              <img
+                                src={submission.submissionImage}
+                                alt="Submission"
+                                className="w-full h-auto mb-2 rounded"
+                              />
+                              {submission.assessment && (
+                                <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                  <h5 className="font-medium mb-1">
+                                    Assessment:
+                                  </h5>
+                                  <p className="whitespace-pre-wrap">
+                                    {submission.assessment}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {assignment ? (
+                      <div>
+                        <div className="bg-gray-50 dark:bg-zinc-800 p-4 rounded-lg mb-4">
+                          <h4 className="font-medium mb-2">Question:</h4>
+                          <p>{assignment.question}</p>
+                        </div>
+                        {submissions.length > 0 ? (
+                          <div>
+                            <h4 className="font-medium mb-2">
+                              Your Submission:
+                            </h4>
+                            <div className="border dark:border-zinc-700 p-4 rounded-lg">
+                              <img
+                                src={submissions[0].submissionImage}
+                                alt="Your submission"
+                                className="w-full h-auto mb-2 rounded"
+                              />
+                              {submissions[0].assessment && (
+                                <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                  <h5 className="font-medium mb-1">
+                                    Assessment:
+                                  </h5>
+                                  <p className="whitespace-pre-wrap">
+                                    {submissions[0].assessment}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <div>
+                            <input
+                              type="file"
+                              onChange={handleFileChange}
+                              accept="image/*"
+                              className="w-full mb-2"
+                            />
+                            <button
+                              onClick={handleSubmitAssignment}
+                              className="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white py-2 px-4 rounded-lg transition-colors"
+                            >
+                              Submit Assignment
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-gray-600 dark:text-gray-400">
+                        No assignment available yet.
+                      </p>
+                    )}
+                  </div>
                 )}
               </div>
             )}
@@ -636,5 +766,89 @@ const VideoDetails = () => {
   );
 };
 
+// Add the missing helper functions
+const fetchNotes = async () => {
+  try {
+    const response = await fetch(`${baseUrl}videos/${videoId}/notes`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (response.ok) {
+      const result = await response.json();
+      setNotes(result);
+    }
+  } catch (err) {
+    toast.error("Failed to fetch notes");
+  }
+};
+
+const handleAddNote = async () => {
+  try {
+    const response = await fetch(`${baseUrl}videos/${videoId}/notes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(newNote),
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      setNotes([...notes, result]);
+      setNewNote({ heading: "", content: "" });
+      toast.success("Note added successfully");
+    }
+  } catch (err) {
+    toast.error("Failed to add note");
+  }
+};
+
+const handleAnswerChange = (questionId, index) => {
+  setUserAnswers({ ...userAnswers, [questionId]: index });
+};
+
+const handleSubmitQuiz = () => {
+  let score = 0;
+  selectedVideo.mcqs.forEach((question) => {
+    if (userAnswers[question._id] === question.correctAnswerIndex) {
+      score++;
+    }
+  });
+  setQuizScore(score);
+  setQuizSubmitted(true);
+
+  window.scrollTo({
+    top: document.querySelector(".quiz-section").offsetTop,
+    behavior: "smooth",
+  });
+};
+
+const getQuizOptionClass = (questionId, index, isSelected) => {
+  const baseClasses = "mb-2 p-3 rounded-lg cursor-pointer transition-colors";
+
+  if (quizSubmitted) {
+    const isCorrect =
+      index ===
+      selectedVideo.mcqs.find((q) => q._id === questionId).correctAnswerIndex;
+    if (isSelected && isCorrect) {
+      return `${baseClasses} bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100`;
+    }
+    if (isSelected && !isCorrect) {
+      return `${baseClasses} bg-red-100 dark:bg-red-900/30 text-red-900 dark:text-red-100`;
+    }
+    if (!isSelected && isCorrect) {
+      return `${baseClasses} bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100`;
+    }
+    return `${baseClasses} bg-gray-50 dark:bg-zinc-800`;
+  }
+
+  return `${baseClasses} ${
+    isSelected
+      ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-900 dark:text-indigo-100"
+      : "bg-gray-50 dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700"
+  }`;
+};
 
 export default VideoDetails;
