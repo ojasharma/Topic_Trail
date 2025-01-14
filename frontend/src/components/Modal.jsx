@@ -1,48 +1,61 @@
 import React, { useState, useContext } from "react";
 import "./Modal.css";
-import { ThemeContext } from "./ThemeContext"; // Import the theme context
+import { ThemeContext } from "./ThemeContext";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
-const token = sessionStorage.getItem("token");
-
 const Modal = ({ isOpen, onClose, type }) => {
-  const { isDarkMode } = useContext(ThemeContext); // Access the dark mode state from context
+  const { isDarkMode } = useContext(ThemeContext);
+  const [title, setTitle] = useState("");
+  const [classCode, setClassCode] = useState("");
+  const [error, setError] = useState("");
 
   if (!isOpen) return null;
-
-  const [title, setTitle] = useState(""); // For "Create Class" input
-  const [classCode, setClassCode] = useState(""); // For "Join Class" input
-  const [error, setError] = useState(""); // To handle any errors
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const createurl = `${baseUrl}classes/create`;
-    const joinUrl = `${baseUrl}classes/join`;
+    // Get token at time of request
+    const token = localStorage.getItem("token");
 
-    const data = type === "create" ? { title } : { classCode }; // Send title for create, classCode for join
+    if (!token) {
+      setError("You must be logged in to perform this action");
+      return;
+    }
+
+    const createUrl = `${baseUrl}classes/create`;
+    const joinUrl = `${baseUrl}classes/join`;
+    const data = type === "create" ? { title } : { classCode };
 
     try {
-      const response = await fetch(type === "create" ? createurl : joinUrl, {
+      const response = await fetch(type === "create" ? createUrl : joinUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // Token retrieved at request time
         },
         body: JSON.stringify(data),
       });
 
+      if (response.status === 403) {
+        setError("Access denied. Please try logging out and logging in again.");
+        return;
+      }
+
       if (!response.ok) {
-        throw new Error("An error occurred. Please try again.");
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || "An error occurred. Please try again."
+        );
       }
 
       const result = await response.json();
-      console.log(result); // Handle success result if needed
-      onClose(); // Close the modal after submission
-      window.location.reload(); // Refresh the page after successful submission
+      console.log("Success:", result);
+      onClose();
+      window.location.reload();
     } catch (error) {
-      setError(error.message); // Show error message if request fails
+      setError(error.message);
+      console.error("Error:", error);
     }
   };
 
@@ -58,39 +71,40 @@ const Modal = ({ isOpen, onClose, type }) => {
         <h2>{type === "create" ? "Create Class" : "Join Class"}</h2>
         <form onSubmit={handleSubmit}>
           {type === "create" ? (
-            <>
+            <div className="form-group">
               <label htmlFor="title">Class Title:</label>
               <input
                 type="text"
                 id="title"
-                name="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
+                className="form-input"
               />
-            </>
+            </div>
           ) : (
-            <>
+            <div className="form-group">
               <label htmlFor="classCode">Class Code:</label>
               <input
                 type="text"
                 id="classCode"
-                name="classCode"
                 value={classCode}
                 onChange={(e) => setClassCode(e.target.value)}
                 required
+                className="form-input"
               />
-            </>
+            </div>
           )}
-          {error && <p className="error-message">{error}</p>}{" "}
-          {/* Display error message */}
-          <button type="submit" className="submitButton">
-            {type === "create" ? "Create Class" : "Join Class"}
-          </button>
+          {error && <p className="error-message">{error}</p>}
+          <div className="button-group">
+            <button type="submit" className="submit-button">
+              {type === "create" ? "Create Class" : "Join Class"}
+            </button>
+            <button type="button" className="close-button" onClick={onClose}>
+              Close
+            </button>
+          </div>
         </form>
-        <button className="closeButton" onClick={onClose}>
-          Close
-        </button>
       </div>
     </div>
   );
