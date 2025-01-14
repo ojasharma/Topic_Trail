@@ -1,46 +1,64 @@
-# Topic Trail
+# TopicTrail
 
-**Topic Trail** is a web and mobile application designed to help users navigate classes and video lectures in them efficiently. The platform allows users to create and join classes and manage videos in there. By leveraging AI, the platform allows users to search for specific topics within a video lecture and get access to the lecture's summary and quiz and make notes.
+TopicTrail is a smart lecture management platform powered by AI. It simplifies class and video lecture management with features like class creation, video transcription, topic search, AI-generated summaries, quizzes, and note-taking.
 
 ---
 
 ## Features
 
-- Create and join classes.
-- Creator can upload video lectures seamlessly.
-- Search for specific topics within a video.
-- Clean and intuitive user interface.
-- Built with React for the frontend.
-- AI integration for topic segmentation.
-- AI generated summary.
-- AI generated quiz.
-- Note taking.
+### User Management
+- **User Authentication**:
+  - Sign up using Gmail with OTP verification.
+  - Secure login using JWT tokens.
+
+### Class Management
+- **Class Creation**:
+  - Create a class with a unique class code.
+  - Delete or manage your classes.
+- **Join Classes**:
+  - Join a class using the unique class code.
+- **Member Management**:
+  - Manage members within your classes.
+
+### Content Management
+- **Video Uploads**:
+  - Seamlessly upload video lectures within classes.
+- **AI Pipeline**:
+  - **FFmpeg**: Converts video to audio for processing.
+  - **Whisper**: Generates accurate transcriptions from audio.
+  - **Grok**: Provides topic segmentation, summaries, and quiz generation.
+- **Notes**:
+  - Add notes to videos for better reference.
 
 ---
 
 ## Tech Stack
 
 ### Frontend
-- **React**: For building the web interface.
-- **HTML/CSS**: For layout and styling.
+- **React.js**: For building a responsive and intuitive user interface.
+- **Tailwind CSS**: Used for styling some components.
 
 ### Backend
-- **Node.js** 
-- **Express** 
+- **Node.js**: Server-side runtime environment.
+- **Express.js**: Web framework for handling APIs and server logic.
 
-### AI
+### AI Integration
+- **FFmpeg**: Video-to-audio conversion.
+- **Whisper**: For transcription generation ([Whisper Model](https://huggingface.co/openai/whisper-large-v3-turbo)).
+- **Grok**: For topic segmentation, summaries, and quiz generation ([Grok Documentation](https://groq.com/)).
 
 ### Database
-- **MongoDB** : To store classes ,video metadata and topic mappings.
+- **MongoDB**: To store class data, video metadata, and topic mappings.
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
-1. Install **Node.js** and **npm** for frontend and backend development.
-2. Install **MongoDB** 
-3. Install **ffmpeg** for generation of summary and quiz.
+
+1. Install **Node.js** and **npm**.
+2. Install **MongoDB**.
+3. Install **FFmpeg** ([Download FFmpeg](https://www.ffmpeg.org/)).
 
 ---
 
@@ -51,35 +69,66 @@
    git clone git@github.com:namita3599/Topic_Trail.git
    ```
 
+2. Navigate to the project directory:
    ```bash
    cd Topic-Trail
    ```
 
-2. Install frontend dependencies:
-    ```bash
-    cd frontend
-    npm install
-    ```
+3. Install dependencies for the frontend:
+   ```bash
+   cd frontend
+   npm install
+   ```
 
-3. Install frontend dependencies:
-    ```bash
-    cd backend
-    npm install
-    ```
+4. Install dependencies for the backend:
+   ```bash
+   cd backend
+   npm install
+   ```
+
+---
 
 ### Usage
-1. Run the backend server:
-    ```bash
-    cd backend
-    npm start
-    ```
 
-2. Run the frontend server:
-    ```bash
-    cd frontend
-    npm run dev
-    ```
+1. Start the backend server:
+   ```bash
+   cd backend
+   npm start
+   ```
 
-3. Add necessary env files.
+2. Start the frontend server:
+   ```bash
+   cd frontend
+   npm run dev
+   ```
 
-4. Access the application in your browser.
+3. Add the necessary environment variables:
+
+   ```env
+   MONGO_CONN="mongodb+srv://<username>:<password>@cluster0.mongodb.net/auth-db?retryWrites=true&w=majority&appName=Cluster0"
+   JWT_SECRET="your-jwt-secret"
+   CLOUDINARY_CLOUD_NAME="your-cloudinary-cloud-name"
+   CLOUDINARY_API_KEY="your-cloudinary-api-key"
+   CLOUDINARY_API_SECRET="your-cloudinary-api-secret"
+   HUGGINGFACE_API_KEY="your-huggingface-api-key"
+   HUGGINGFACE_WHISPER_URL="https://api-inference.huggingface.co/models/openai/whisper-large-v3-turbo"
+   HUGGINGFACE_QWEN_URL="https://api-inference.huggingface.co/models/Qwen/QwQ-32B-Preview"
+   GROQ_API_KEY="your-groq-api-key"
+   EMAIL_USER="your-email@gmail.com"
+   EMAIL_PASSWORD="your-email-password"
+   # NODE_EXTRA_CA_CERTS=cloudinary.crt
+   ```
+
+4. Access the application in your browser at `http://localhost:3000`.
+
+---
+
+## Contribution
+
+We welcome contributions! To contribute:
+
+1. Fork the repository.
+2. Create a new branch with your improvements.
+3. Submit a pull request for review.
+
+---

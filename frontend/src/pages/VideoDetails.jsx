@@ -8,10 +8,12 @@ import {
   FaQuestionCircle,
   FaStickyNote,
   FaPlusCircle,
+  FaClipboard,
 } from "react-icons/fa";
 import Header from "../components/HeaderVideo";
 import CustomVideoPlayer from "../components/CustomVideoPlayer";
 import EditableSummary from "../components/EditableSummary";
+import { AssignmentForm, AssignmentView } from "./AssignmentComponents";
 
 const QuizForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -99,6 +101,9 @@ const VideoDetails = () => {
   const [showQuizForm, setShowQuizForm] = useState(false);
   const [generatingQuiz, setGeneratingQuiz] = useState(false);
   const token = localStorage.getItem("token");
+  const [showAssignment, setShowAssignment] = useState(false);
+  const [assignment, setAssignment] = useState(null);
+  const [submissions, setSubmissions] = useState([]);
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
   useEffect(() => {
@@ -108,6 +113,76 @@ const VideoDetails = () => {
     fetchVideoDetails();
     fetchNotes();
   }, [videoId, location]);
+
+  const fetchAssignment = async () => {
+    try {
+      const response = await fetch(`${baseUrl}videos/${videoId}/assignment`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const result = await response.json();
+        setAssignment(result);
+
+        // Fetch submissions if assignment exists
+        const submissionsResponse = await fetch(
+          `${baseUrl}videos/${videoId}/assignment/submissions`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (submissionsResponse.ok) {
+          const submissionsResult = await submissionsResponse.json();
+          setSubmissions(submissionsResult);
+        }
+      }
+    } catch (err) {
+      toast.error("Failed to fetch assignment");
+    }
+  };
+
+  const handleCreateAssignment = async (data) => {
+    try {
+      const response = await fetch(`${baseUrl}videos/${videoId}/assignment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      });
+      if (response.ok) {
+        toast.success("Assignment created successfully");
+        fetchAssignment();
+      }
+    } catch (err) {
+      toast.error("Failed to create assignment");
+    }
+  };
+
+  const handleSubmitAssignment = async (formData) => {
+    try {
+      const response = await fetch(
+        `${baseUrl}videos/${videoId}/assignment/submit`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+      if (response.ok) {
+        toast.success("Assignment submitted successfully");
+        fetchAssignment();
+      }
+    } catch (err) {
+      toast.error("Failed to submit assignment");
+    }
+  };
 
   const fetchVideoDetails = async () => {
     if (!token) {
@@ -313,13 +388,16 @@ const VideoDetails = () => {
         <div className="flex-1 min-w-[40%] bg-gray-50 dark:bg-zinc-900 p-6 rounded-lg shadow-lg">
           {/* Section toggle buttons */}
           <div className="grid grid-cols-3 gap-2 mb-6">
-            {["Summary", "Quiz", "Notes"].map((item) => (
+            {["Summary", "Quiz", "Notes", "Assignment"].map((item) => (
               <button
                 key={item}
                 onClick={() => {
                   setShowSummary(item === "Summary" ? !showSummary : false);
                   setShowQuiz(item === "Quiz" ? !showQuiz : false);
                   setShowNotes(item === "Notes" ? !showNotes : false);
+                  setShowAssignment(
+                    item === "Assignment" ? !showAssignment : false
+                  );
                 }}
                 className="w-full flex items-center justify-center gap-1 bg-indigo-600 hover:bg-indigo-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white py-2 px-2 rounded-lg transition-colors text-sm sm:text-base"
               >
@@ -328,10 +406,14 @@ const VideoDetails = () => {
                   <FaQuestionCircle className="flex-shrink-0" />
                 )}
                 {item === "Notes" && <FaStickyNote className="flex-shrink-0" />}
+                {item === "Assignment" && (
+                  <FaClipboard className="flex-shrink-0" />
+                )}
                 <span className="hidden md:inline">{item}</span>
                 {(item === "Summary" && showSummary) ||
                 (item === "Quiz" && showQuiz) ||
-                (item === "Notes" && showNotes) ? (
+                (item === "Notes" && showNotes) ||
+                (item === "Assignment" && showAssignment) ? (
                   <FaChevronUp className="flex-shrink-0" />
                 ) : (
                   <FaChevronDown className="flex-shrink-0" />
@@ -528,6 +610,24 @@ const VideoDetails = () => {
                 </div>
               </div>
             )}
+            {showAssignment && (
+              <div className="bg-white dark:bg-zinc-900 p-4 rounded-lg shadow-lg mb-6 h-96 overflow-y-auto">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                  Assignment
+                </h3>
+                {isCreator && !assignment && (
+                  <AssignmentForm onSubmit={handleCreateAssignment} />
+                )}
+                {assignment && (
+                  <AssignmentView
+                    assignment={assignment}
+                    submissions={submissions}
+                    isCreator={isCreator}
+                    onSubmit={handleSubmitAssignment}
+                  />
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -536,89 +636,5 @@ const VideoDetails = () => {
   );
 };
 
-// Add the missing helper functions
-const fetchNotes = async () => {
-  try {
-    const response = await fetch(`${baseUrl}videos/${videoId}/notes`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (response.ok) {
-      const result = await response.json();
-      setNotes(result);
-    }
-  } catch (err) {
-    toast.error("Failed to fetch notes");
-  }
-};
-
-const handleAddNote = async () => {
-  try {
-    const response = await fetch(`${baseUrl}videos/${videoId}/notes`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(newNote),
-    });
-
-    if (response.ok) {
-      const result = await response.json();
-      setNotes([...notes, result]);
-      setNewNote({ heading: "", content: "" });
-      toast.success("Note added successfully");
-    }
-  } catch (err) {
-    toast.error("Failed to add note");
-  }
-};
-
-const handleAnswerChange = (questionId, index) => {
-  setUserAnswers({ ...userAnswers, [questionId]: index });
-};
-
-const handleSubmitQuiz = () => {
-  let score = 0;
-  selectedVideo.mcqs.forEach((question) => {
-    if (userAnswers[question._id] === question.correctAnswerIndex) {
-      score++;
-    }
-  });
-  setQuizScore(score);
-  setQuizSubmitted(true);
-
-  window.scrollTo({
-    top: document.querySelector(".quiz-section").offsetTop,
-    behavior: "smooth",
-  });
-};
-
-const getQuizOptionClass = (questionId, index, isSelected) => {
-  const baseClasses = "mb-2 p-3 rounded-lg cursor-pointer transition-colors";
-
-  if (quizSubmitted) {
-    const isCorrect =
-      index ===
-      selectedVideo.mcqs.find((q) => q._id === questionId).correctAnswerIndex;
-    if (isSelected && isCorrect) {
-      return `${baseClasses} bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100`;
-    }
-    if (isSelected && !isCorrect) {
-      return `${baseClasses} bg-red-100 dark:bg-red-900/30 text-red-900 dark:text-red-100`;
-    }
-    if (!isSelected && isCorrect) {
-      return `${baseClasses} bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100`;
-    }
-    return `${baseClasses} bg-gray-50 dark:bg-zinc-800`;
-  }
-
-  return `${baseClasses} ${
-    isSelected
-      ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-900 dark:text-indigo-100"
-      : "bg-gray-50 dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700"
-  }`;
-};
 
 export default VideoDetails;

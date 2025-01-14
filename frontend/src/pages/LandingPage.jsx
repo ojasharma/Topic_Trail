@@ -35,13 +35,13 @@ const LandingPage = () => {
       imgSrc: "/three.png",
     },
     {
-      title: "Comprehensive Learning Dashboard",
+      title: "Comprehensive Learning Dashboard (coming soon)",
       description:
         "Design personalized study plans, track performance with detailed analytics, and inspire growth with an engaging leaderboard to foster healthy competition and continuous improvement.",
       imgSrc: "/four.png",
     },
     {
-      title: "Interactive Doubt Resolution",
+      title: "Interactive Doubt Resolution (soming soon)",
       description:
         "Ask questions effortlessly, receive prompt answers from instructors, and utilize a smart doubt tracker to monitor and manage all queries for a seamless learning experience.",
       imgSrc: "/five.png",

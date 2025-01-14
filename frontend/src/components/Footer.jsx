@@ -4,7 +4,7 @@ import styles from "./Footer.module.css"; // Import the CSS module
 const Footer = () => {
   return (
     <footer className={styles.footer}>
-      <div className={styles.content}>
+      {/* <div className={styles.content}>
         <p>
           <a
             href="https://github.com/dieselsharma"
@@ -34,7 +34,7 @@ const Footer = () => {
           </a>
           Frontend & UI/UX by Namita
         </p>
-      </div>
+      </div> */}
     </footer>
   );
 };

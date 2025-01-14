@@ -4,6 +4,8 @@ const CloudinaryService = require("../services/CloudinaryService");
 const { processVideo } = require("../utils/VideoProcessing");
 const GroqService = require("../services/GroqService");
 const groqService = new GroqService();
+const Groq = require("groq-sdk");
+const cloudinary = require("cloudinary").v2;
 
 const cloudinaryService = new CloudinaryService();
 
@@ -395,7 +397,275 @@ const VideoController = {
       });
     }
   },
+
+  async addAssignment(req, res) {
+    try {
+      const { videoId } = req.params;
+      const { question } = req.body;
+
+      if (!question) {
+        return res
+          .status(400)
+          .json({ error: "Assignment question is required" });
+      }
+
+      const video = await VideoModel.findById(videoId);
+      if (!video) {
+        return res.status(404).json({ error: "Video not found" });
+      }
+
+      // Verify if the user is the creator of the class
+      const classDoc = await ClassModel.findById(video.classId);
+      if (
+        !classDoc ||
+        classDoc.creator.toString() !== req.user._id.toString()
+      ) {
+        return res
+          .status(403)
+          .json({ error: "Not authorized to add assignment" });
+      }
+
+      video.assignment = { question, submissions: [] };
+      await video.save();
+
+      res.json({
+        message: "Assignment added successfully",
+        assignment: video.assignment,
+      });
+    } catch (error) {
+      console.error("Add assignment error:", error);
+      res.status(500).json({
+        error: "Failed to add assignment",
+        details: error.message,
+      });
+    }
+  },
+
+  async getAssignment(req, res) {
+    try {
+      const { videoId } = req.params;
+      const video = await VideoModel.findById(videoId);
+
+      if (!video) {
+        return res.status(404).json({ error: "Video not found" });
+      }
+
+      if (!video.assignment) {
+        return res
+          .status(404)
+          .json({ error: "No assignment found for this video" });
+      }
+
+      res.json(video.assignment);
+    } catch (error) {
+      console.error("Get assignment error:", error);
+      res.status(500).json({ error: "Failed to fetch assignment" });
+    }
+  },
+  async submitAssignment(req, res) {
+    try {
+      const { videoId } = req.params;
+      const submissionImage = req.file;
+
+      // Fetch full user data from database
+      const UserModel = require('../Models/User');  // Make sure to import your User model
+      const user = await UserModel.findById(req.user._id);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const video = await VideoModel.findById(videoId);
+      if (!video) {
+        return res.status(404).json({ error: "Video not found" });
+      }
+
+      if (!video.assignment?.question) {
+        return res.status(400).json({ error: "No assignment exists for this video" });
+      }
+
+      const cloudinaryResult = await cloudinary.uploader.upload(
+        submissionImage.path,
+        {
+          folder: "assignemtn",
+          resource_type: "auto",
+        }
+      );
+      const assessment = await getAssessmentFromGroq(video.assignment.question, cloudinaryResult.url);
+
+      const submission = {
+        userName: user.name || user.username || user.email || 'Anonymous User',
+        submissionImage: cloudinaryResult.url,
+        assessment,
+        userId: user._id,
+        createdAt: new Date()
+      };
+
+      video.assignment.submissions.push(submission);
+      await video.save();
+
+      await CloudinaryService.cleanup(submissionImage.path);
+
+      res.json({
+        message: "Assignment submitted successfully",
+        submission
+      });
+    } catch (error) {
+      console.error("Assignment submission error:", error);
+      if (req.file) {
+        await CloudinaryService.cleanup(req.file.path);
+      }
+      res.status(500).json({ 
+        error: "Failed to submit assignment",
+        details: error.message 
+      });
+    }
+},
+  // async submitAssignment(req, res) {
+  //   try {
+  //     const { videoId } = req.params;
+  //     const submissionImage = req.file;
+
+  //     if (!submissionImage) {
+  //       return res.status(400).json({ error: "No image provided" });
+  //     }
+
+  //     const video = await VideoModel.findById(videoId);
+  //     if (!video) {
+  //       return res.status(404).json({ error: "Video not found" });
+  //     }
+
+  //     if (!video.assignment?.question) {
+  //       return res
+  //         .status(400)
+  //         .json({ error: "No assignment exists for this video" });
+  //     }
+
+  //     // Check if user has already submitted
+  //     const existingSubmission = video.assignment.submissions.find(
+  //       (sub) => sub.userId.toString() === req.user._id.toString()
+  //     );
+  //     if (existingSubmission) {
+  //       // Clean up uploaded file first
+  //       await CloudinaryService.cleanup(submissionImage.path);
+  //       return res
+  //         .status(400)
+  //         .json({ error: "You have already submitted an assignment" });
+  //     }
+
+  //     // Upload image to Cloudinary
+  //     // const cloudinaryResult = await CloudinaryService.uploadImage(
+  //     //   submissionImage.path
+  //     // );
+  //       const cloudinaryResult = await cloudinary.uploader.upload(
+  //         submissionImage.path,
+  //         {
+  //           folder: "assignemtn",
+  //           resource_type: "auto",
+  //         }
+  //       );
+
+  //     // Get assessment from Groq Vision
+  //     const assessment = await getAssessmentFromGroq(
+  //       video.assignment.question,
+  //       cloudinaryResult.url
+  //     );
+
+  //     // Create submission
+  //     const submission = {
+  //       userName: req.user.name,
+  //       submissionImage: cloudinaryResult.url,
+  //       assessment,
+  //       userId: req.user._id,
+  //       createdAt: new Date(),
+  //     };
+
+  //     // Add submission to video
+  //     video.assignment.submissions.push(submission);
+  //     await video.save();
+
+  //     // Clean up temporary file
+  //     await CloudinaryService.cleanup(submissionImage.path);
+
+  //     res.json({
+  //       message: "Assignment submitted successfully",
+  //       submission,
+  //     });
+  //   } catch (error) {
+  //     console.error("Assignment submission error:", error);
+  //     if (req.file) {
+  //       await CloudinaryService.cleanup(req.file.path);
+  //     }
+  //     res.status(500).json({
+  //       error: "Failed to submit assignment",
+  //       details: error.message,
+  //     });
+  //   }
+  // },
+
+  async getSubmissions(req, res) {
+    try {
+      const { videoId } = req.params;
+      const video = await VideoModel.findById(videoId);
+
+      if (!video) {
+        return res.status(404).json({ error: "Video not found" });
+      }
+
+      // Check if user is class creator
+      const classDoc = await ClassModel.findById(video.classId);
+      const isCreator = classDoc.creator.toString() === req.user._id.toString();
+
+      // If user is not creator, only return their submission
+      if (!isCreator) {
+        const userSubmission = video.assignment?.submissions.filter(
+          (sub) => sub.userId.toString() === req.user._id.toString()
+        );
+        return res.json(userSubmission || []);
+      }
+
+      // Return all submissions for creator
+      res.json(video.assignment?.submissions || []);
+    } catch (error) {
+      console.error("Get submissions error:", error);
+      res.status(500).json({ error: "Failed to fetch submissions" });
+    }
+  },
 };
+async function getAssessmentFromGroq(question, imageUrl) {
+  const groq = new Groq();
+  
+  try {
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: `Assignment Question: ${question}\n\nPlease provide a detailed assessment of this submission. PointWise. Consider accuracy, completeness, and clarity in your evaluation. Provide specific feedback and suggestions for improvement where applicable.`
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: imageUrl
+              }
+            }
+          ]
+        }
+      ],
+      model: "llama-3.2-11b-vision-preview",
+      temperature: 0.7,
+      max_tokens: 1024,
+    });
+
+    return chatCompletion.choices[0].message.content;
+  } catch (error) {
+    console.error('Groq assessment error:', error);
+    throw new Error('Failed to get AI assessment');
+  }
+}
 
 
 module.exports = VideoController;
+
+

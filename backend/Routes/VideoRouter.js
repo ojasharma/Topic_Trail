@@ -6,6 +6,7 @@ const ensureAuthenticated = require("../Middlewares/Auth");
 
 const router = express.Router();
 
+
 // Configure multer for video upload
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -14,6 +15,22 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now();
     cb(null, uniqueSuffix + path.extname(file.originalname));
+  },
+});
+const imageUpload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(
+      path.extname(file.originalname).toLowerCase()
+    );
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+    cb(new Error("Invalid file type - only JPEG, JPG, or PNG allowed"));
   },
 });
 
@@ -85,6 +102,29 @@ router.post(
   "/:videoId/generate-quiz",
   ensureAuthenticated,
   VideoController.generateQuiz
+);
+
+// Assignment routes
+router.post(
+  "/:videoId/assignment",
+  ensureAuthenticated,
+  VideoController.addAssignment
+);
+router.get(
+  "/:videoId/assignment",
+  ensureAuthenticated,
+  VideoController.getAssignment
+);
+router.post(
+  "/:videoId/assignment/submit",
+  ensureAuthenticated,
+  imageUpload.single("image"),
+  VideoController.submitAssignment
+);
+router.get(
+  "/:videoId/assignment/submissions",
+  ensureAuthenticated,
+  VideoController.getSubmissions
 );
 
 module.exports = router;

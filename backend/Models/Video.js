@@ -1,6 +1,31 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+// Add these schemas after the existing schemas in VideoSchema
+const AssignmentSubmissionSchema = new Schema({
+  userName: {
+    type: String,
+    required: true,
+  },
+  submissionImage: {
+    type: String,  // Cloudinary URL
+    required: true,
+  },
+  assessment: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users",
+    required: true,
+  }
+});
+
 const NoteSchema = new Schema({
   heading: {
     type: String,
@@ -111,6 +136,14 @@ const VideoSchema = new Schema({
     default: Date.now,
   },
   notes: [NoteSchema],
+  
+  assignment: {
+    question: {
+      type: String,
+      default: null,
+    },
+    submissions: [AssignmentSubmissionSchema],
+  },
 });
 
 // Indexes for optimizing queries
