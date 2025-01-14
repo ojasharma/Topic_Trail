@@ -15,11 +15,11 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [filter, setFilter] = useState("all");
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
   const { isDarkMode } = useContext(ThemeContext); // Accessing dark mode state
-
+  console.log(token);
   useEffect(() => {
     const fetchClasses = async () => {
       if (!token) {
@@ -95,7 +95,7 @@ function Home() {
   }, [token]);
 
   const handleCardClick = (classId, classCode) => {
-    sessionStorage.setItem("classCode", classCode);
+    localStorage.setItem("classCode", classCode);
     navigate(`/class/${classId}`);
   };
 

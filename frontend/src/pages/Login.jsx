@@ -44,12 +44,13 @@ function Login() {
         body: JSON.stringify(loginInfo),
       });
       const result = await response.json();
-      const { success, message, jwtToken, name, error } = result;
+      const { success, message, jwtToken, name, userId, error } = result;
       if (success) {
         handleSuccess(message);
-        // Store token and user name in sessionStorage
-        sessionStorage.setItem("token", jwtToken);
-        sessionStorage.setItem("loggedInUser", name);
+        // Store token and user name in localStorage
+        localStorage.setItem("token", jwtToken);
+        localStorage.setItem("loggedInUser", name);
+        localStorage.setItem("userId", userId);
         setTimeout(() => {
           navigate("/home");
         }, 1000);

@@ -24,12 +24,12 @@ const ClassDetails = () => {
   const [isCreator, setCreator] = useState(false);
   const [videoToDelete, setVideoToDelete] = useState(null);
   const [openMenuId, setOpenMenuId] = useState(null);
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedClassCode = sessionStorage.getItem("classCode");
+    const storedClassCode = localStorage.getItem("classCode");
     if (storedClassCode) {
       setClassCode(storedClassCode);
     }

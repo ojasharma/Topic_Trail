@@ -8,6 +8,7 @@ import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import ClassDetails from "./pages/ClassDetails";
 import VideoDetails from "./pages/VideoDetails";
+import ProfilePage from "./pages/ProfilePage"; // Import the new ProfilePage component
 
 function App() {
   return (
@@ -51,6 +52,15 @@ function App() {
           element={
             <Layout>
               <VideoDetails />
+            </Layout>
+          }
+        />
+        {/* Add the new Profile route */}
+        <Route
+          path="/profile"
+          element={
+            <Layout>
+              <ProfilePage />
             </Layout>
           }
         />

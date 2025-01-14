@@ -5,9 +5,11 @@ const {
   joinClass,
   getUserClasses,
   leaveClass,
-  deleteClass
+  deleteClass,
 } = require("../Controllers/ClassController");
 
+// const ClassController = require("../Controllers/ClassController");
+// console.log("Controller contents:", ClassController);
 // console.log({ ensureAuthenticated });
 // console.log({ createClass, joinClass, getUserClasses, leaveClass });
 

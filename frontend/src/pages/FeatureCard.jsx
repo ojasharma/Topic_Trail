@@ -1,7 +1,21 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 
-const FeatureCard = ({ title, description, imgSrc }) => {
+const FeatureCard = ({
+  title,
+  description,
+  imgSrc,
+  initialRotationY,
+  zAxisOffset,
+}) => {
   const cardRef = useRef(null);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    if (card) {
+      // Apply initial rotation and Z-axis offset
+      card.style.transform = `perspective(1000px) rotateY(${initialRotationY}deg) translateZ(${zAxisOffset}px)`;
+    }
+  }, [initialRotationY, zAxisOffset]);
 
   const handleMouseMove = (e) => {
     const card = cardRef.current;
@@ -12,42 +26,21 @@ const FeatureCard = ({ title, description, imgSrc }) => {
     const y = e.clientY - rect.top; // Y position relative to the card
 
     // Calculate rotation values
-    const rotateX = (y / rect.height - 0.5) * -15; // Inverted to tilt correctly
-    const rotateY = (x / rect.width - 0.5) * 15;
+    const rotateX = (y / rect.height - 0.5) * -25; // Inverted to tilt correctly
+    const rotateY = (x / rect.width - 0.5) * 25;
 
-    // Apply 3D rotation with perspective
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    // Apply 3D rotation, initial Z-axis offset, and perspective
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${
+      rotateY + initialRotationY
+    }deg) translateZ(${zAxisOffset}px)`;
   };
 
   const handleMouseLeave = () => {
-    // Reset the card's transform when the cursor leaves
     const card = cardRef.current;
     if (card) {
-      card.style.transform = "perspective(1000px) rotateX(0) rotateY(0)";
+      // Reset to initial rotation and Z-axis offset
+      card.style.transform = `perspective(1000px) rotateY(${initialRotationY}deg) translateZ(${zAxisOffset}px)`;
     }
-  };
-
-  // Function to add glowing effect to keywords
-  const highlightKeywords = (text) => {
-    const keywords = [
-      "performance",
-      "feature",
-      "premium",
-      "easy",
-      "advanced",
-      "quick",
-    ];
-
-    return text.split(" ").map((word, index) => {
-      if (keywords.includes(word.toLowerCase())) {
-        return (
-          <span key={index} className="glowing-text">
-            {word}
-          </span>
-        );
-      }
-      return word + " ";
-    });
   };
 
   return (
@@ -73,7 +66,7 @@ const FeatureCard = ({ title, description, imgSrc }) => {
         </h3>
       </div>
       <p className="text-gray-300 dark:text-gray-300 glowing-description">
-        {highlightKeywords(description)}
+        {description}
       </p>
     </div>
   );

@@ -1,41 +1,50 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import CursorEffect from "./CursorEffect";
 import TypewriterText from "./TypewriterText";
 import FeatureCard from "./FeatureCard";
 import WelcomeText from "./WelcomeTest";
-
+import { useNavigate } from "react-router-dom";
 const LandingPage = () => {
+  // const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     navigate("/home"); // Redirect to the home page if token exists
+  //   }
+  // }, [navigate]);
+
   const features = [
     {
       title: "Streamlined Class Management",
       description:
         "Effortlessly create and delete classes, join or leave using secure class codes, and seamlessly add or remove members while maintaining full control over class membership and engagement.",
-      imgSrc: "/one.png", // Image for the first feature
+      imgSrc: "/one.png",
     },
     {
       title: "Dynamic Video Tools",
       description:
         "Effortlessly upload, download, and delete videos, while leveraging AI to automatically generate topics, summaries, and quizzes. Seamlessly search through topics, and enhance your videos by adding time-stamped notes for a more interactive and insightful viewing experience.",
-      imgSrc: "/two.png", // Image for the second feature
+      imgSrc: "/two.png",
     },
     {
       title: "Intelligent Assignment Management",
       description:
         "Harness the power of AI for seamless assignment evaluation, delivering precise feedback and actionable insights to elevate learning outcomes and optimize grading efficiency.",
-      imgSrc: "/three.png", // Image for the third feature
+      imgSrc: "/three.png",
     },
     {
       title: "Comprehensive Learning Dashboard",
       description:
         "Design personalized study plans, track performance with detailed analytics, and inspire growth with an engaging leaderboard to foster healthy competition and continuous improvement.",
-      imgSrc: "/four.png", // Image for the fourth feature
+      imgSrc: "/four.png",
     },
     {
       title: "Interactive Doubt Resolution",
       description:
         "Ask questions effortlessly, receive prompt answers from instructors, and utilize a smart doubt tracker to monitor and manage all queries for a seamless learning experience.",
-      imgSrc: "/five.png", // Image for the fifth feature
+      imgSrc: "/five.png",
     },
   ];
 
@@ -45,20 +54,24 @@ const LandingPage = () => {
         <CursorEffect />
       </div>
 
-      <header className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-transparent">
+      <header className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-transparent md:px-6 md:py-4">
         <div className="flex items-center">
-          <img src="/logo_dark.png" alt="Topic Trail Logo" className="h-16" />
+          <img
+            src="/logo_dark.png"
+            alt="Topic Trail Logo"
+            className="h-12 md:h-16"
+          />
         </div>
-        <div className="space-x-4">
+        <div className="space-x-2 md:space-x-4 flex">
           <Link
             to="/login"
-            className="px-4 py-2 text-[#7331AC] rounded hover:bg-[#7331AC] hover:bg-opacity-10"
+            className="text-sm px-3 py-1 md:px-4 md:py-2 text-[#7331AC] rounded hover:bg-[#7331AC] hover:bg-opacity-10"
           >
             Login
           </Link>
           <Link
             to="/signup"
-            className="px-4 py-2 text-white bg-[#7331AC] rounded hover:bg-opacity-90"
+            className="text-sm px-3 py-1 md:px-4 md:py-2 text-white bg-[#7331AC] rounded hover:bg-opacity-90"
           >
             Sign Up
           </Link>
@@ -73,14 +86,21 @@ const LandingPage = () => {
 
         <div className="flex justify-center overflow-x-auto py-8 px-4">
           <div className="flex space-x-4">
-            {features.map((feature, index) => (
-              <FeatureCard
-                key={index}
-                title={feature.title}
-                description={feature.description}
-                imgSrc={feature.imgSrc}
-              />
-            ))}
+            {features.map((feature, index) => {
+              // Z-axis offsets based on index
+              const zAxisOffset = [55, 15, 0, 15, 44][index];
+
+              return (
+                <FeatureCard
+                  key={index}
+                  title={feature.title}
+                  description={feature.description}
+                  imgSrc={feature.imgSrc}
+                  initialRotationY={-(index - 2) * 15} // (-20, -10, 0, 10, 20)
+                  zAxisOffset={zAxisOffset}
+                />
+              );
+            })}
           </div>
         </div>
       </main>

@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { handleError, handleSuccess } from "../utils";
 import { useNavigate } from "react-router-dom";
-import { ThemeContext } from "../components/ThemeContext"; // Theme Context
+import { ThemeContext } from "../components/ThemeContext";
 import styles from "./signup.module.css";
+import OTPModal from "../components/OTPmodal"; // Import the new OTP Modal
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -14,10 +15,11 @@ function Signup() {
     email: "",
     password: "",
   });
-  const [loading, setLoading] = useState(false); // Track loading state
+  const [loading, setLoading] = useState(false);
+  const [showOTPModal, setShowOTPModal] = useState(false);
 
   const navigate = useNavigate();
-  const { isDarkMode } = useContext(ThemeContext); // Access theme context
+  const { isDarkMode } = useContext(ThemeContext);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,9 +34,9 @@ function Signup() {
     if (!name || !email || !password) {
       return handleError("All fields are mandatory.");
     }
-    setLoading(true); // Set loading state to true
+    setLoading(true);
     try {
-      const url = `${baseUrl}auth/signup`; // Backend URL
+      const url = `${baseUrl}auth/signup`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -45,10 +47,8 @@ function Signup() {
       const result = await response.json();
       const { success, message, error } = result;
       if (success) {
-        handleSuccess(message);
-        setTimeout(() => {
-          navigate("/login");
-        }, 1000);
+        handleSuccess("Signup successful! Please verify your email.");
+        setShowOTPModal(true); // Show OTP modal instead of redirecting
       } else if (error) {
         const details = error?.details[0].message;
         handleError(details);
@@ -58,7 +58,34 @@ function Signup() {
     } catch (err) {
       handleError(err);
     } finally {
-      setLoading(false); // Reset loading state
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOTP = async (otpString) => {
+    try {
+      const response = await fetch(`${baseUrl}auth/verify-otp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: signupInfo.email,
+          otp: otpString,
+        }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        handleSuccess("Email verified successfully!");
+        setShowOTPModal(false);
+        setTimeout(() => {
+          navigate("/login");
+        }, 1000);
+      } else {
+        handleError(result.message || "Invalid OTP");
+      }
+    } catch (err) {
+      handleError("Failed to verify OTP");
     }
   };
 
@@ -157,6 +184,12 @@ function Signup() {
           <img src="/bg.jpg" alt="bg" className={styles.sideimg} />
         </div>
       </div>
+      <OTPModal
+        isOpen={showOTPModal}
+        onClose={() => setShowOTPModal(false)}
+        email={signupInfo.email}
+        onVerify={handleVerifyOTP}
+      />
       <ToastContainer />
     </>
   );
