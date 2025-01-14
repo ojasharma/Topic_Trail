@@ -6,12 +6,9 @@ const {
   getUserClasses,
   leaveClass,
   deleteClass,
+  removeMember, // Import the removeMember function
+  getClassById, // Import the getClassMembers function
 } = require("../Controllers/ClassController");
-
-// const ClassController = require("../Controllers/ClassController");
-// console.log("Controller contents:", ClassController);
-// console.log({ ensureAuthenticated });
-// console.log({ createClass, joinClass, getUserClasses, leaveClass });
 
 const router = express.Router();
 
@@ -29,5 +26,11 @@ router.delete("/:classId/leave", ensureAuthenticated, leaveClass);
 
 // Delete a class (only by the creator)
 router.delete("/:classId", ensureAuthenticated, deleteClass);
+
+// Remove a member from a class (only by the creator)
+router.delete("/:classId/remove/:memberId", ensureAuthenticated, removeMember);
+
+// Get members of a specific class
+router.get("/:classId", ensureAuthenticated, getClassById);
 
 module.exports = router;

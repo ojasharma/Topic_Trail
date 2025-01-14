@@ -324,3 +324,44 @@ h1{
     }
 }
 
+
+/* Add these styles to your Home.module.css */
+.menuDropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.menuDropdown button {
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.menuDropdown button:hover {
+  background-color: #f5f5f5;
+}
+
+/* Dark mode styles */
+.dark .menuDropdown {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+.dark .menuDropdown button {
+  color: white;
+}
+
+.dark .menuDropdown button:hover {
+  background-color: #374151;
+}

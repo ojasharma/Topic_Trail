@@ -4,9 +4,10 @@ import styles from "./Home.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import { handleError } from "../utils";
 import { useNavigate } from "react-router-dom";
-import { MoreVertical } from "lucide-react";
 import { ThemeContext } from "../components/ThemeContext"; // Importing ThemeContext
+import MembersModal from "./MembersModal";
 
+import { MoreVertical, Users } from "lucide-react";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 function Home() {
@@ -17,6 +18,9 @@ function Home() {
   const [filter, setFilter] = useState("all");
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const [showMembersModal, setShowMembersModal] = useState(false);
+  const [selectedClassMembers, setSelectedClassMembers] = useState([]);
+  const [selectedClassId, setSelectedClassId] = useState(null);
 
   const { isDarkMode } = useContext(ThemeContext); // Accessing dark mode state
   console.log(token);
@@ -93,7 +97,54 @@ function Home() {
 
     fetchClasses();
   }, [token]);
+  const handleShowMembers = async (classId, event) => {
+    event.stopPropagation();
+    setOpenMenuId(null);
 
+    try {
+      const response = await fetch(`${baseUrl}classes/${classId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch class members");
+      }
+
+      const data = await response.json();
+      setSelectedClassMembers(data.class.members);
+      setSelectedClassId(classId);
+      setShowMembersModal(true);
+    } catch (err) {
+      toast.error(err.message || "Failed to load class members");
+    }
+  };
+
+  const handleRemoveMember = async (classId, memberId) => {
+    try {
+      const response = await fetch(
+        `${baseUrl}classes/${classId}/remove/${memberId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to remove member");
+      }
+
+      setSelectedClassMembers((prev) =>
+        prev.filter((member) => member._id !== memberId)
+      );
+      toast.success("Member removed successfully");
+    } catch (err) {
+      toast.error(err.message || "Failed to remove member");
+    }
+  };
   const handleCardClick = (classId, classCode) => {
     localStorage.setItem("classCode", classCode);
     navigate(`/class/${classId}`);
@@ -187,9 +238,14 @@ function Home() {
           {openMenuId === classItem._id && (
             <div className={styles.menuDropdown}>
               {isCreator ? (
-                <button onClick={(e) => handleDeleteClass(classItem._id, e)}>
-                  Delete Class
-                </button>
+                <>
+                  <button onClick={(e) => handleShowMembers(classItem._id, e)}>
+                    Manage Members
+                  </button>
+                  <button onClick={(e) => handleDeleteClass(classItem._id, e)}>
+                    Delete Class
+                  </button>
+                </>
               ) : (
                 <button onClick={(e) => handleLeaveClass(classItem._id, e)}>
                   Leave Class
@@ -230,6 +286,14 @@ function Home() {
           ))
         )}
       </div>
+      <MembersModal
+        isOpen={showMembersModal}
+        onClose={() => setShowMembersModal(false)}
+        members={selectedClassMembers}
+        classId={selectedClassId}
+        isCreator={true}
+        onRemoveMember={handleRemoveMember}
+      />
       <ToastContainer />
     </div>
   );
