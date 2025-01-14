@@ -98,7 +98,7 @@ const VideoDetails = () => {
   const [quizScore, setQuizScore] = useState(0);
   const [showQuizForm, setShowQuizForm] = useState(false);
   const [generatingQuiz, setGeneratingQuiz] = useState(false);
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
   useEffect(() => {

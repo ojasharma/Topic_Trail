@@ -20,7 +20,7 @@ const ClassHeader = ({ classCode, classId, onSearch, isCreator }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const savedTheme = sessionStorage.getItem("theme") || "light";
+    const savedTheme = localStorage.getItem("theme") || "light";
     setIsDarkMode(savedTheme === "dark");
     document.documentElement.setAttribute("data-theme", savedTheme);
   }, []);
@@ -28,7 +28,7 @@ const ClassHeader = ({ classCode, classId, onSearch, isCreator }) => {
   const toggleTheme = () => {
     const newTheme = isDarkMode ? "light" : "dark";
     setIsDarkMode(!isDarkMode);
-    sessionStorage.setItem("theme", newTheme);
+    localStorage.setItem("theme", newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
   };
 
@@ -77,7 +77,7 @@ const ClassHeader = ({ classCode, classId, onSearch, isCreator }) => {
       const response = await fetch(`${baseUrl}videos/upload`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: formData,
       });
