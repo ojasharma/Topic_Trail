@@ -99,7 +99,7 @@
   right: 10px; /* 10px from the right */
   padding: 8px 15px;
   font-size: 0.8rem;
-  color: #fff;
+  color: black !important;
   background-color: rgb(187, 34, 34);
   border: none;
   border-radius: 5px;
