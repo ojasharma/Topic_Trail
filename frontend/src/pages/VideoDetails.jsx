@@ -462,7 +462,7 @@ const VideoDetails = () => {
                 selectedVideo.summary.length === 0 ? (
                   <div className="flex items-center justify-center h-full">
                     <img
-                      src="/public/loading_gif1.gif"
+                      src="/loading_gif1.gif"
                       alt="Loading..."
                       className="w-16 h-16"
                     />
@@ -524,7 +524,7 @@ const VideoDetails = () => {
                 {generatingQuiz ? (
                   <div className="flex items-center justify-center h-64">
                     <img
-                      src="/public/loading_gif1.gif"
+                      src="/loading_gif1.gif"
                       alt="Generating quiz..."
                       className="w-16 h-16"
                     />
