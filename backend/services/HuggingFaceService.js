@@ -126,6 +126,8 @@ After that Generate a structured summary of the main educational content only. I
 Your reply should be in JSON format where each key is a topic and the value of the key is the topic's summary. ALL TOPICS SHOULD HAVE A CORRESPONDING SUMMARY. The summary should be a brief of what's inside the text (phrase it like: The instructor says that...). The topics should be chronological according to the lecture script (Don't create useless topics - they should be relevant to the core educational content). Provide descriptive 100 words of summary for each topic.
 But this JSON should start with that initial decision's result only.
 
+[NEVER SAY ANYTHING EXCEPT THE JSON OUT PUT THIS RULE PRECEEDS OVER ALL RULES]
+
 Text: "${chunk}"`,
       },
     ],
